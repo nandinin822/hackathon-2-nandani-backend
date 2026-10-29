@@ -164,37 +164,6 @@ def analyze_with_gemini_vision(image_bytes: bytes) -> Optional[dict]:
         print(f"Gemini API error: {e}")
         return None
 
-@app.get("/")
-def read_root():
-    index_file = STATIC_DIR / "index.html"
-    if index_file.exists():
-        return HTMLResponse(content=index_file.read_text(encoding="utf-8"))
-    return JSONResponse({
-        "system": "AegisCare AI",
-        "status": "active",
-        "docs_url": "/docs"
-    })
-
-@app.get("/styles.css")
-def get_styles():
-    f = STATIC_DIR / "styles.css"
-    if f.exists():
-        return FileResponse(f, media_type="text/css")
-    raise HTTPException(status_code=404)
-
-@app.get("/app.js")
-def get_app_js():
-    f = STATIC_DIR / "app.js"
-    if f.exists():
-        return FileResponse(f, media_type="application/javascript")
-    raise HTTPException(status_code=404)
-
-@app.get("/assets/{filename:path}")
-def get_static_asset(filename: str):
-    f = STATIC_DIR / "assets" / filename
-    if f.exists():
-        return FileResponse(f)
-    raise HTTPException(status_code=404)
 
 
 @app.get("/api/config")
@@ -450,6 +419,11 @@ def get_daily_summary():
             "emergency_alerts": fall_count
         }
     }
+
+
+# Mount static frontend root (serves index.html, styles.css, app.js, assets)
+if STATIC_DIR.exists():
+    app.mount("/", StaticFiles(directory=str(STATIC_DIR), html=True), name="frontend")
 
 if __name__ == "__main__":
     import uvicorn
