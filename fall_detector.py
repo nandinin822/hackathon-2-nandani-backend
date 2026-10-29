@@ -5,10 +5,16 @@ from pathlib import Path
 from typing import Dict, Any, List, Optional
 import cv2
 
-# Local backend root
+# Local backend root and vendor fallback
 BACKEND_ROOT = Path(__file__).resolve().parent
-if str(BACKEND_ROOT) not in sys.path:
-    sys.path.insert(0, str(BACKEND_ROOT))
+VENDOR_DIR = Path('/home/pc/.gemini/antigravity-ide/scratch/vendor/ai-fall-detection-system')
+
+if (BACKEND_ROOT / "src").exists():
+    if str(BACKEND_ROOT) not in sys.path:
+        sys.path.insert(0, str(BACKEND_ROOT))
+elif VENDOR_DIR.exists():
+    if str(VENDOR_DIR) not in sys.path:
+        sys.path.insert(0, str(VENDOR_DIR))
 
 from src.webapp.pipeline import process_video
 from src.webapp.server import _load_config
@@ -23,9 +29,17 @@ class VideoFallPipelineAdapter:
         self.config["pose"]["model_complexity"] = 0  # BlazePose Lite for CPU performance
         self.config["pose"]["backend"] = "mediapipe"
         
+        # Locate model checkpoints
+        if (BACKEND_ROOT / "models" / "run5_stride2_aug").exists():
+            models_base = BACKEND_ROOT / "models"
+        elif (VENDOR_DIR / "models").exists():
+            models_base = VENDOR_DIR / "models"
+        else:
+            models_base = BACKEND_ROOT / "models"
+            
         self.model_paths = [
-            str(BACKEND_ROOT / "models" / "run5_stride2_aug" / "fold_0" / "best_model.pth"),
-            str(BACKEND_ROOT / "models" / "urfd" / "fold_0" / "best_model.pth")
+            str(models_base / "run5_stride2_aug" / "fold_0" / "best_model.pth"),
+            str(models_base / "urfd" / "fold_0" / "best_model.pth")
         ]
         
         # Anti-spam alert tracking
@@ -101,7 +115,6 @@ class VideoFallPipelineAdapter:
             for e in pipeline_result.events
         ]
         
-        # If model exceeded threshold but FSM was still accumulating stillness frames, record peak event
         if has_fall and not events_data:
             events_data.append({
                 "frame": peak_frame_idx,
