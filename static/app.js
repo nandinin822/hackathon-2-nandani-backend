@@ -1158,19 +1158,21 @@ function initStep1Header() {
 
     applyTheme(currentTheme);
 
-    // 3. Login / Signup Button click feedback (Ready for Step 3 modal)
+    // 3. Login / Signup Button click -> Direct Modal Open (No dummy alert)
     const btnLogin = document.getElementById('btn-login-nav');
     const btnSignup = document.getElementById('btn-signup-nav');
 
     if (btnLogin) {
-        btnLogin.addEventListener('click', () => {
-            alert('Step 1 Header Active! Login modal will be connected in Step 3.');
+        btnLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (typeof openAuthModal === 'function') openAuthModal('login');
         });
     }
 
     if (btnSignup) {
-        btnSignup.addEventListener('click', () => {
-            alert('Step 1 Header Active! Get Started modal will be connected in Step 3.');
+        btnSignup.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (typeof openAuthModal === 'function') openAuthModal('signup');
         });
     }
 }
@@ -2020,6 +2022,36 @@ function initAuthSystem() {
     }
 
     initLandingLiveDynamics();
+
+    // Direct 1-Click Caregiver Demo Access Handler
+    function init1ClickDemoHandler() {
+        const btnDemo = document.getElementById('btn-demo-caregiver');
+        if (!btnDemo) return;
+        btnDemo.addEventListener('click', (e) => {
+            e.preventDefault();
+            const demoUser = {
+                id: 'usr_demo_1',
+                name: 'Sarah Connor',
+                email: 'caregiver@family.org',
+                role: 'Family Member / Guardian'
+            };
+            setStoredUser(demoUser);
+            if (typeof closeAuthModal === 'function') closeAuthModal();
+
+            // Transition to Sentinel Hub Console
+            const landingView = document.getElementById('view-landing');
+            const appConsoleView = document.getElementById('view-app-console');
+            if (landingView) landingView.style.display = 'none';
+            if (appConsoleView) appConsoleView.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            const banner = document.getElementById('auth-msg-banner');
+            if (banner) {
+                banner.style.display = 'none';
+            }
+        });
+    }
+    init1ClickDemoHandler();
 
     // 4. Handle Sign Out (Both Navbar & App Return Bar)
     function handleSignOut() {
