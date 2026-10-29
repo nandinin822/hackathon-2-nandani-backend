@@ -9,15 +9,21 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="styles.css">
+    <!-- Supabase JS Client v2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <!-- ================= TOP LANDING HEADER (STEP 1) ================= -->
+    
+
+    <!-- ================= LANDING PAGE VIEW (STEP 2: HERO SECTION) ================= -->
+    <div id="view-landing" class="landing-page-root">
+<!-- ================= TOP LANDING HEADER (STEP 1) ================= -->
     <header class="landing-top-bar">
         <div class="landing-nav-container">
             <!-- Left Side: Brand Logo -->
@@ -70,13 +76,511 @@
                     <i class="fa-solid fa-user-plus"></i>
                     <span id="nav-signup-text">Get Started</span>
                 </button>
+
+                <!-- Authenticated User Profile Pill (Visible when logged in) -->
+                <div class="nav-user-pill" id="nav-user-pill" style="display: none;">
+                    <div class="user-avatar-circle" id="nav-user-avatar">SC</div>
+                    <div class="user-details-mini">
+                        <span class="user-name-text" id="nav-user-name">Sarah Connor</span>
+                        <span class="user-role-text" id="nav-user-role">Guardian</span>
+                    </div>
+                    <button type="button" class="btn-nav-logout" id="btn-nav-logout" title="Sign Out">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </header>
+        <main class="landing-wrap">
+            <!-- Hero Section -->
+            <section class="landing-hero" id="hero-section">
+                <!-- Left Column: Copy & Actions -->
+                <div class="hero-copy">
+                    <div class="eyebrow" id="hero-eyebrow">
+                        <span class="eyebrow-dot" aria-hidden="true"></span>
+                        <span id="hero-eyebrow-text">ELDER-CARE VISION GUARDIAN</span>
+                    </div>
 
+                    <h1 id="hero-headline">
+                        Intelligent Elder-Care Monitoring &amp; Real-Time Safety Guardian
+                    </h1>
 
-    <!-- Header Navigation -->
-    <header class="app-header">
+                    <p class="lead" id="hero-lead">
+                        An AI guardian that continuously watches camera feeds, spots unassisted bed-exits and sudden falls, and dispatches instant visual Telegram alerts so family never worries in silence.
+                    </p>
+
+                    <div class="cta">
+                        <button type="button" class="btn pri" id="btn-hero-start">
+                            <i class="fa-solid fa-play"></i>
+                            <span id="hero-cta-primary-text">Start Live Guardian</span>
+                        </button>
+                        <button type="button" class="btn gh" id="btn-hero-demo">
+                            <i class="fa-solid fa-circle-play"></i>
+                            <span id="hero-cta-secondary-text">See How It Works</span>
+                        </button>
+                    </div>
+
+                    <p class="sub" id="hero-subtext">
+                        Zero wearables required. 100% on-device CPU inference preserves dignity and privacy.
+                    </p>
+
+                    <!-- ScanReview Hero Proof Badges -->
+                    <div class="hero-proof" aria-label="Key product benefits">
+                        <span>
+                            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m4 10 4 4 8-8"></path></svg>
+                            <span id="proof-cpu">30+ FPS Pure CPU</span>
+                        </span>
+                        <span>
+                            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m4 10 4 4 8-8"></path></svg>
+                            <span id="proof-sens">98.3% Fall Sensitivity</span>
+                        </span>
+                        <span>
+                            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m4 10 4 4 8-8"></path></svg>
+                            <span id="proof-alerts">Instant Telegram Alerts</span>
+                        </span>
+                    </div>
+
+                    <!-- PPT Slide 1 Detection Status Levels Legend Strip -->
+                    <div class="hero-status-legend" aria-label="PPT Status Levels">
+                        <div class="legend-chip legend-safe">
+                            <span class="legend-indicator"></span>
+                            <div>
+                                <b>SAFE</b>
+                                <small>Normal Activity</small>
+                            </div>
+                        </div>
+                        <div class="legend-chip legend-warning">
+                            <span class="legend-indicator"></span>
+                            <div>
+                                <b>WARNING</b>
+                                <small>Bed-Exit Anomaly</small>
+                            </div>
+                        </div>
+                        <div class="legend-chip legend-emergency">
+                            <span class="legend-indicator"></span>
+                            <div>
+                                <b>EMERGENCY</b>
+                                <small>Immediate Fall Alert</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: ScanReview Interactive Stage Preview -->
+                <div class="stage" id="demo" aria-label="Live product preview: Pose tracking and telegram emergency alerts">
+                    <div class="stage-heading">
+                        <span class="stage-kicker">
+                            <i class="fa-solid fa-shield-halved"></i> LIVE PRODUCT PREVIEW
+                        </span>
+                        <span class="stage-live">
+                            <i aria-hidden="true"></i> AUTO DEMO
+                        </span>
+                    </div>
+
+                    <!-- ScanReview Slot with Manager/Caregiver Phone -->
+                    <div class="slot">
+                        <div class="manager-device" aria-label="Caregiver phone alert preview">
+                            <div class="manager-screen">
+                                <div class="manager-topline">
+                                    <span>AEGISCARE TELEGRAM ALERT</span>
+                                    <span class="manager-status">LIVE SYNC</span>
+                                </div>
+                                <div class="wait" id="stage-device-label">Caregiver's phone</div>
+                                <div class="note show" role="status" id="stage-alert-note">
+                                    <span class="mark alert-mark">🚨</span>
+                                    <div>
+                                        <b id="stage-note-title">EMERGENCY: Fall Detected</b>
+                                        <small id="stage-note-desc">Living Room Cam 01 · 98.3% BiLSTM Risk · Telegram Snapshot Sent</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sentinel Vision Live HUD Frame -->
+                    <div class="stage-vision-hud">
+                        <div class="stage-feed-header">
+                            <span class="pill"><i class="fa-solid fa-video"></i> Living Room Sentinel Cam</span>
+                            <span class="fps-pill" id="stage-fps-counter">38.2 FPS (CPU)</span>
+                        </div>
+                        
+                        <!-- Interactive Canvas with real-time Pose Estimation -->
+                        <div class="stage-canvas-container">
+                            <canvas id="hero-pose-canvas" width="460" height="230"></canvas>
+                            <div class="stage-canvas-overlay">
+                                <span class="canvas-tag tag-model"><i class="fa-solid fa-microchip"></i> MediaPipe 33-pt</span>
+                                <span class="canvas-tag tag-risk" id="stage-risk-pill">Risk: 98.3%</span>
+                                <span class="canvas-tag tag-status" id="stage-status-pill">● EMERGENCY</span>
+                            </div>
+                        </div>
+
+                        <div class="stage-feed-footer">
+                            <span><i class="fa-solid fa-check"></i> On-Device Vision</span>
+                            <span><i class="fa-solid fa-lock"></i> No Cloud Video Leak</span>
+                            <span><i class="fa-solid fa-bolt"></i> &lt;120ms Latency</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= PPT SECTION 1: THE CAREGIVER CHALLENGE ================= -->
+            <section class="landing-section sec-challenge animated-glass-section" id="challenge-section">
+                <!-- Ambient Floating Glow Mesh -->
+                <div class="ambient-glow-mesh orb-challenge-1"></div>
+                <div class="ambient-glow-mesh orb-challenge-2"></div>
+
+                <div class="landing-wrap relative-z2">
+                    <div class="sec-header-center">
+                        <div class="ppt-eyebrow"><i class="fa-solid fa-circle-radiation text-accent"></i> 01 · THE CAREGIVER CHALLENGE</div>
+                        <h2 class="ppt-sec-title">Caregivers Cannot Watch Every Moment</h2>
+                        <div class="section-motion-sub">
+                            <span class="motion-dot-pulse"></span>
+                            <span>Live Sentinel Radar • 4 Continuous Vulnerabilities Monitored</span>
+                        </div>
+                    </div>
+
+                    <div class="challenge-layout">
+                        <!-- Left: Senior Circular Image & Sonar Radar Rings -->
+                        <div class="challenge-visual-col">
+                            <div class="senior-avatar-container">
+                                <div class="sonar-wave-pulse ring-1"></div>
+                                <div class="sonar-wave-pulse ring-2"></div>
+                                <div class="sonar-wave-pulse ring-3"></div>
+                                
+                                <div class="senior-avatar-frame glass-avatar-frame">
+                                    <img src="assets/senior_by_window.jpg" alt="Elderly senior sitting by window" class="senior-circle-img">
+                                    
+                                    <!-- Floating Vision Badge -->
+                                    <div class="floating-vision-tag glass-tag">
+                                        <span class="live-dot-pulse green"></span>
+                                        <span>Optical Watch Active</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="challenge-caption">
+                                Unmonitored hours create silent risks for seniors living at home.
+                            </p>
+                        </div>
+
+                        <!-- Right: 4 Challenge Problem Cards with Staggered Floating Motion & Glassmorphism -->
+                        <div class="challenge-cards-grid">
+                            <div class="ppt-card challenge-card glass-card card-float-1">
+                                <div class="card-glass-reflection"></div>
+                                <div class="card-icon-wrap icon-cyan icon-glow-pulse">
+                                    <i class="fa-solid fa-eye-slash"></i>
+                                </div>
+                                <div class="card-text-body">
+                                    <h3>Continuous Monitoring</h3>
+                                    <p>Impossible to watch camera feeds all day during remote work or daily errands.</p>
+                                </div>
+                                <div class="card-micro-status">
+                                    <span class="micro-dot cyan"></span> Live Feeds Exceeded
+                                </div>
+                            </div>
+
+                            <div class="ppt-card challenge-card glass-card card-float-2">
+                                <div class="card-glass-reflection"></div>
+                                <div class="card-icon-wrap icon-amber icon-glow-pulse">
+                                    <i class="fa-solid fa-clock-rotate-left"></i>
+                                </div>
+                                <div class="card-text-body">
+                                    <h3>Delayed Awareness</h3>
+                                    <p>Sudden falls or long inactivity go unnoticed without automated real-time alerts.</p>
+                                </div>
+                                <div class="card-micro-status">
+                                    <span class="micro-dot amber"></span> Latency Vulnerability
+                                </div>
+                            </div>
+
+                            <div class="ppt-card challenge-card glass-card card-float-3">
+                                <div class="card-glass-reflection"></div>
+                                <div class="card-icon-wrap icon-orange icon-glow-pulse">
+                                    <i class="fa-solid fa-folder-open"></i>
+                                </div>
+                                <div class="card-text-body">
+                                    <h3>No Central Record</h3>
+                                    <p>Caregivers lack one simple, chronological timeline to review past incidents.</p>
+                                </div>
+                                <div class="card-micro-status">
+                                    <span class="micro-dot orange"></span> Audit Gap
+                                </div>
+                            </div>
+
+                            <div class="ppt-card challenge-card glass-card card-float-4">
+                                <div class="card-glass-reflection"></div>
+                                <div class="card-icon-wrap icon-blue icon-glow-pulse">
+                                    <i class="fa-solid fa-bell-slash"></i>
+                                </div>
+                                <div class="card-text-body">
+                                    <h3>Notification Fatigue</h3>
+                                    <p>Repeated false alerts bury the critical moments that truly matter to loved ones.</p>
+                                </div>
+                                <div class="card-micro-status">
+                                    <span class="micro-dot blue"></span> 94% False Positives
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= PPT SECTION 2: OUR SOLUTION ================= -->
+            <section class="landing-section sec-solution animated-glass-section" id="solution-section">
+                <!-- Ambient Flowing Mesh -->
+                <div class="ambient-glow-mesh orb-solution-1"></div>
+                <div class="ambient-glow-mesh orb-solution-2"></div>
+
+                <div class="landing-wrap relative-z2">
+                    <div class="sec-header-center">
+                        <div class="ppt-eyebrow"><i class="fa-solid fa-shield-halved text-accent"></i> 02 · OUR SOLUTION</div>
+                        <h2 class="ppt-sec-title">An AI Guardian That Keeps Watch</h2>
+                        <div class="section-motion-sub">
+                            <span class="motion-dot-pulse blue"></span>
+                            <span>On-Device BiLSTM Engine • 30 FPS Local Stream Processing</span>
+                        </div>
+                    </div>
+
+                    <div class="solution-layout">
+                        <!-- Left: 3 Core Pillars + Status Level Action Cards -->
+                        <div class="solution-content-col">
+                            <div class="solution-feature-list">
+                                <div class="sol-feature-item glass-feature-row card-float-1">
+                                    <div class="sol-icon-box icon-glow-pulse">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </div>
+                                    <div class="sol-text-group">
+                                        <h3>Visual Scene Analysis</h3>
+                                        <p>Google Gemini Vision and BiLSTM temporal tracking inspect submitted frames for concerning situations.</p>
+                                    </div>
+                                </div>
+
+                                <div class="sol-feature-item glass-feature-row card-float-2">
+                                    <div class="sol-icon-box icon-glow-pulse">
+                                        <i class="fa-solid fa-shield-halved"></i>
+                                    </div>
+                                    <div class="sol-text-group">
+                                        <h3>Smart Rule Classification</h3>
+                                        <p>Backend validation rules verify every AI output before raising emergency alerts.</p>
+                                    </div>
+                                </div>
+
+                                <div class="sol-feature-item glass-feature-row card-float-3">
+                                    <div class="sol-icon-box icon-glow-pulse">
+                                        <i class="fa-brands fa-telegram"></i>
+                                    </div>
+                                    <div class="sol-text-group">
+                                        <h3>Instant Telegram Alerts</h3>
+                                        <p>Family members receive real-time mobile notifications whenever conditions require immediate attention.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PPT Status Cards Row with Animated Heartbeats -->
+                            <div class="ppt-status-buttons-row">
+                                <div class="ppt-status-btn-card btn-status-safe glass-status-pill status-animated-safe" data-status-preview="safe" title="Click to inspect SAFE posture criteria">
+                                    <div class="status-beacon-pulse safe-beacon"></div>
+                                    <span class="status-btn-title">SAFE</span>
+                                    <span class="status-btn-sub">Normal Log</span>
+                                </div>
+                                <div class="ppt-status-btn-card btn-status-warn glass-status-pill status-animated-warn" data-status-preview="warn" title="Click to inspect WARNING criteria">
+                                    <div class="status-beacon-pulse warn-beacon"></div>
+                                    <span class="status-btn-title">WARNING</span>
+                                    <span class="status-btn-sub">Check-In</span>
+                                </div>
+                                <div class="ppt-status-btn-card btn-status-emerg glass-status-pill status-animated-emerg" data-status-preview="emerg" title="Click to inspect EMERGENCY alert dispatch">
+                                    <div class="status-beacon-pulse emerg-beacon"></div>
+                                    <span class="status-btn-title">EMERGENCY</span>
+                                    <span class="status-btn-sub">Instant Alert</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Oval Caregiver Visual with Animated Neon Halo & Careway Badge -->
+                        <div class="solution-visual-col">
+                            <div class="caregiver-oval-container">
+                                <div class="halo-aura-glow"></div>
+                                <div class="caregiver-oval-frame glass-oval-frame">
+                                    <img src="assets/caregiver_senior.jpg" alt="Caregiver gently assisting elderly lady" class="caregiver-oval-img">
+                                    
+                                    <!-- Floating Telemetry Chip -->
+                                    <div class="floating-solution-chip glass-tag">
+                                        <i class="fa-solid fa-microchip text-cyan"></i>
+                                        <span>BlazePose + BiLSTM Inference</span>
+                                    </div>
+
+                                    <div class="careway-trust-badge glass-badge">
+                                        <i class="fa-solid fa-hand-holding-heart"></i>
+                                        <span>Careway Home Care Certified</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="solution-caption">
+                                Centralized computer vision, logging, and mobile family alerts.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= PPT SECTION 3: MVP DELIVERABLES ================= -->
+            <section class="landing-section sec-deliverables animated-glass-section" id="deliverables-section">
+                <!-- Ambient Flowing Mesh -->
+                <div class="ambient-glow-mesh orb-deliverables-1"></div>
+                <div class="ambient-glow-mesh orb-deliverables-2"></div>
+
+                <div class="landing-wrap relative-z2">
+                    <div class="sec-header-center">
+                        <div class="ppt-eyebrow"><i class="fa-solid fa-cubes text-accent"></i> 05 · MVP DELIVERABLES</div>
+                        <h2 class="ppt-sec-title">Help on Demand, History on Record</h2>
+                        <div class="section-motion-sub">
+                            <span class="motion-dot-pulse red"></span>
+                            <span>Live Telemetry Channel • Tamper-Evident Chronological Ledger</span>
+                        </div>
+                    </div>
+
+                    <div class="deliverables-layout">
+                        <!-- Left: Royal Blue SOS Patient Emergency Button Card with Wave Rings & Light Beam -->
+                        <div class="deliverable-card sos-patient-card glass-sos-card card-floating-stage">
+                            <div class="sos-shine-beam"></div>
+                            
+                            <div class="sos-patient-header">
+                                <div class="sos-icon-circle-badge-container">
+                                    <div class="sos-wave-ring ring-a"></div>
+                                    <div class="sos-wave-ring ring-b"></div>
+                                    <div class="sos-icon-circle-badge">
+                                        <i class="fa-solid fa-phone-volume"></i>
+                                    </div>
+                                </div>
+                                <span class="sos-badge-text">SOS</span>
+                            </div>
+                            
+                            <h3>Patient Emergency Button</h3>
+                            <p class="sos-desc">
+                                If a patient cannot reach family directly, one press notifies every registered family member immediately on Telegram.
+                            </p>
+                            
+                            <div class="sos-feature-pills">
+                                <span class="sos-pill glass-pill"><i class="fa-solid fa-bolt text-yellow"></i> Instant Telegram Dispatch</span>
+                                <span class="sos-pill glass-pill"><i class="fa-solid fa-microphone text-cyan"></i> Two-Way Voice Station</span>
+                            </div>
+
+                            <div class="sos-card-live-kicker">
+                                <span class="pulse-beacon-radar"></span>
+                                <span>Zero-Click Dispatch • 200ms Telegram Webhook</span>
+                            </div>
+                        </div>
+
+                        <!-- Right: Timestamped Activity History Card with Live Ticking Chronology -->
+                        <div class="deliverable-card history-audit-card glass-audit-card card-floating-stage-delayed">
+                            <div class="history-card-top">
+                                <div class="history-title-row">
+                                    <h3>Timestamped Activity History</h3>
+                                    <div class="live-audit-badge glass-badge">
+                                        <span class="audit-live-dot"></span>
+                                        <span id="live-audit-status-text">LIVE AUDIT STREAM</span>
+                                    </div>
+                                </div>
+                                <p>Every detected event is stored with a timestamp for caregiver audit.</p>
+                            </div>
+
+                            <div class="history-timeline-rows" id="landing-audit-rows">
+                                <div class="history-row row-status-safe glass-row">
+                                    <span class="history-status-tag tag-safe">
+                                        <span class="beacon-dot green"></span> SAFE
+                                    </span>
+                                    <span class="history-timestamp" id="landing-tick-ts-1">14:02:10</span>
+                                    <span class="history-event-text">Normal seated posture</span>
+                                </div>
+
+                                <div class="history-row row-status-warn glass-row">
+                                    <span class="history-status-tag tag-warn">
+                                        <span class="beacon-dot amber"></span> WARNING
+                                    </span>
+                                    <span class="history-timestamp" id="landing-tick-ts-2">14:15:42</span>
+                                    <span class="history-event-text">Object slipped from hand</span>
+                                </div>
+
+                                <div class="history-row row-status-emerg glass-row row-active-pulse">
+                                    <span class="history-status-tag tag-emerg">
+                                        <span class="beacon-dot red beacon-flashing"></span> EMERGENCY
+                                    </span>
+                                    <span class="history-timestamp" id="landing-tick-ts-3">14:16:05</span>
+                                    <span class="history-event-text">Fall detected · Alert sent</span>
+                                </div>
+                            </div>
+
+                            <div class="history-card-bottom-tags">
+                                <span><i class="fa-solid fa-shield-check text-cyan"></i> Care Ledger Audit Sync</span>
+                                <span><i class="fa-solid fa-file-waveform text-accent"></i> Tamper-Evident Chronology</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= CALL TO ACTION BAND WITH MOVING GRADIENT & PARTICLES ================= -->
+            <section class="landing-band animated-gradient-band">
+                <div class="band-particle-layer">
+                    <span class="particle p1"></span>
+                    <span class="particle p2"></span>
+                    <span class="particle p3"></span>
+                    <span class="particle p4"></span>
+                    <span class="particle p5"></span>
+                </div>
+                <div class="landing-wrap relative-z2">
+                    <h2 class="band-headline">Protect Your Loved Ones Today</h2>
+                    <p class="band-sub">Zero wearables required. 100% on-device CPU execution preserves senior privacy and dignity.</p>
+                    <button type="button" class="btn btn-band-cta pulse-cta-btn" id="btn-band-get-started">
+                        <i class="fa-solid fa-user-plus"></i> Get Started Free
+                    </button>
+                </div>
+            </section>
+
+            <!-- ================= LANDING FOOTER ================= -->
+            <footer class="landing-footer">
+                <div class="landing-wrap footer-inner">
+                    <div class="footer-brand-side">
+                        <div class="brand-group">
+                            <div class="brand-logo sm-logo">
+                                <i class="fa-solid fa-shield-heart"></i>
+                            </div>
+                            <div class="brand-text">
+                                <span class="brand-name">AegisCare<span class="accent-text">AI</span></span>
+                                <span class="brand-tagline">Vision Sentinel for Eldercare</span>
+                            </div>
+                        </div>
+                        <p class="footer-desc">Intelligent, privacy-focused computer vision guardian for elderly care. Zero-lag CPU execution.</p>
+                    </div>
+
+                    <div class="footer-links-side">
+                        <div class="footer-link-group">
+                            <h4>Platform</h4>
+                            <a href="#challenge-section">The Challenge</a>
+                            <a href="#solution-section">Our Solution</a>
+                            <a href="#deliverables-section">MVP Deliverables</a>
+                        </div>
+                        <div class="footer-link-group">
+                            <h4>Access</h4>
+                            <a href="#" id="footer-link-login">Log In</a>
+                            <a href="#" id="footer-link-signup">Get Started</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom-bar">
+                    <div class="landing-wrap footer-bottom-inner">
+                        <span>&copy; 2026 AegisCare AI. Built for Smart Vision Elderly Care.</span>
+                        <a href="#hero-section" class="back-to-top">Back to top <i class="fa-solid fa-arrow-up"></i></a>
+                    </div>
+                </div>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- ================= MULTI-TAB APPLICATION CONSOLE (ACCESSED VIA LOGIN / START) ================= -->
+    <div id="view-app-console" class="app-console-view" style="display: none;">
+        <!-- Header Navigation -->
+        <header class="app-header">
         <div class="nav-container">
             <div class="brand-group">
                 <div class="brand-logo">
@@ -132,6 +636,18 @@
                 <button class="header-sos-btn" id="header-sos-trigger" title="Quick Emergency Help">
                     <span class="sos-icon-pulse"><i class="fa-solid fa-bell"></i></span>
                     <span class="sos-btn-text">SOS Call</span>
+                </button>
+
+                <!-- Clean Caregiver Profile Pill in App Header -->
+                <div class="app-header-profile" id="app-header-profile">
+                    <div class="app-avatar-circle" id="app-avatar-circle">SC</div>
+                    <span class="app-caregiver-name" id="app-header-name">Sarah Connor</span>
+                </div>
+
+                <!-- Single Sign Out Button in App Header -->
+                <button type="button" class="btn-app-signout" id="btn-app-logout" title="Sign out of AegisCare">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <span>Sign Out</span>
                 </button>
             </div>
         </div>
@@ -876,6 +1392,138 @@
             <p>&copy; 2026 AegisCare AI &bull; Intelligent Edge Vision Guardian for Elderly Loved Ones. Zero-lag CPU Execution.</p>
         </div>
     </footer>
+    </div>
+
+
+    <!-- ================= SUPABASE AUTHENTICATION MODAL POPUP ================= -->
+    <div class="auth-modal-backdrop" id="auth-modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
+        <div class="auth-modal-card">
+            <!-- Modal Header -->
+            <div class="auth-modal-header">
+                <div class="auth-brand-badge">
+                    <div class="brand-logo sm-logo">
+                        <i class="fa-solid fa-shield-heart"></i>
+                    </div>
+                    <span class="brand-title-sm">AegisCare<span class="accent-text">AI</span></span>
+                </div>
+                <button type="button" class="auth-modal-close" id="btn-close-auth-modal" aria-label="Close modal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Tab Switcher (Log In / Get Started) -->
+            <div class="auth-tabs" role="tablist">
+                <button type="button" class="auth-tab-btn active" id="tab-btn-login" role="tab" aria-selected="true">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Log In
+                </button>
+                <button type="button" class="auth-tab-btn" id="tab-btn-signup" role="tab" aria-selected="false">
+                    <i class="fa-solid fa-user-plus"></i> Get Started (Sign Up)
+                </button>
+            </div>
+
+            <!-- Live Alert / Feedback Banner -->
+            <div class="auth-msg-banner" id="auth-msg-banner" style="display: none;"></div>
+
+            <!-- Form 1: Log In Mode -->
+            <form id="form-auth-login" class="auth-form-panel">
+                <div class="form-title-group">
+                    <h3 id="auth-modal-title">Caregiver Log In</h3>
+                    <p class="auth-sub">Enter your email and password to access the Sentinel Hub.</p>
+                </div>
+
+                <div class="auth-field-group">
+                    <label for="login-email">Email or Username</label>
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-envelope input-icon"></i>
+                        <input type="text" id="login-email" class="auth-input" placeholder="caregiver@family.org" value="caregiver@family.org" required autocomplete="username">
+                    </div>
+                </div>
+
+                <div class="auth-field-group">
+                    <div class="label-row">
+                        <label for="login-password">Password</label>
+                    </div>
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <input type="password" id="login-password" class="auth-input" placeholder="••••••••" value="password123" required autocomplete="current-password">
+                        <button type="button" class="btn-toggle-pw" data-target="login-password" tabindex="-1"><i class="fa-solid fa-eye"></i></button>
+                    </div>
+                </div>
+
+                <div class="auth-actions-row">
+                    <label class="remember-checkbox">
+                        <input type="checkbox" id="login-remember" checked>
+                        <span>Remember session on this device</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-auth-submit" id="btn-submit-login">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                    <span>Log In to Sentinel Hub</span>
+                </button>
+
+                
+
+                <p class="auth-footer-note">
+                    New caregiver? <a href="#" id="link-to-signup">Click here to Sign Up</a>
+                </p>
+            </form>
+
+            <!-- Form 2: Sign Up / Get Started Mode -->
+            <form id="form-auth-signup" class="auth-form-panel" style="display: none;">
+                <div class="form-title-group">
+                    <h3>Get Started with AegisCare</h3>
+                    <p class="auth-sub">Create your caregiver account for intelligent vision monitoring.</p>
+                </div>
+
+                <div class="auth-field-group">
+                    <label for="signup-name">Full Name</label>
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-user input-icon"></i>
+                        <input type="text" id="signup-name" class="auth-input" placeholder="Sarah Connor" required autocomplete="name">
+                    </div>
+                </div>
+
+                <div class="auth-field-group">
+                    <label for="signup-email">Email Address</label>
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-envelope input-icon"></i>
+                        <input type="email" id="signup-email" class="auth-input" placeholder="sarah@familycare.org" required autocomplete="email">
+                    </div>
+                </div>
+
+                <div class="auth-field-group">
+                    <label for="signup-role">Caregiver Role</label>
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-hospital-user input-icon"></i>
+                        <select id="signup-role" class="auth-input">
+                            <option value="Family Member / Guardian" selected>Family Member / Guardian</option>
+                            <option value="Home Nurse / Clinical Caregiver">Home Nurse / Clinical Caregiver</option>
+                            <option value="Assisted Living Facility Staff">Assisted Living Facility Staff</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="auth-field-group">
+                    <label for="signup-password">Create Password</label>
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <input type="password" id="signup-password" class="auth-input" placeholder="At least 6 characters" required autocomplete="new-password">
+                        <button type="button" class="btn-toggle-pw" data-target="signup-password" tabindex="-1"><i class="fa-solid fa-eye"></i></button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-auth-submit" id="btn-submit-signup">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span>Create Account &amp; Unlock App</span>
+                </button>
+
+                <p class="auth-footer-note">
+                    Already registered? <a href="#" id="link-to-login">Log in here</a>
+                </p>
+            </form>
+        </div>
+    </div>
 
     <script src="app.js"></script>
 </body>

@@ -4,7 +4,9 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+    initAuthSystem();
     initStep1Header();
+    initStep2Hero();
     initTabs();
     initSentinelHub();
     initVideoLab();
@@ -1028,7 +1030,16 @@ function initStep1Header() {
             signup: "Get Started",
             themeDark: "Dark",
             themeLight: "Light",
-            sentinelActive: "Sentinel Active"
+            sentinelActive: "Sentinel Active",
+            eyebrow: "ELDER-CARE VISION GUARDIAN",
+            headline: "Intelligent Elder-Care Monitoring & Real-Time Safety Guardian",
+            lead: "An AI guardian that continuously watches camera feeds, spots unassisted bed-exits and sudden falls, and dispatches instant visual Telegram alerts so family never worries in silence.",
+            ctaPrimary: "Start Live Guardian",
+            ctaSecondary: "See How It Works",
+            subtext: "Zero wearables required. 100% on-device CPU inference preserves dignity and privacy.",
+            proofCpu: "30+ FPS Pure CPU",
+            proofSens: "98.3% Fall Sensitivity",
+            proofAlerts: "Instant Telegram Alerts"
         },
         es: {
             langName: "Español",
@@ -1036,7 +1047,16 @@ function initStep1Header() {
             signup: "Empezar",
             themeDark: "Oscuro",
             themeLight: "Claro",
-            sentinelActive: "Centinela Activo"
+            sentinelActive: "Centinela Activo",
+            eyebrow: "GUARDIÁN DE VISIÓN PARA ANCIANOS",
+            headline: "Monitoreo Inteligente para Adultos Mayores y Guardián en Tiempo Real",
+            lead: "Un guardián inteligente que vigila las cámaras, detecta caídas y salidas de cama sin asistencia, y envía alertas instantáneas por Telegram para que la familia nunca se preocupe en silencio.",
+            ctaPrimary: "Iniciar Guardián en Vivo",
+            ctaSecondary: "Cómo Funciona",
+            subtext: "Sin dispositivos corporales. La inferencia 100% en CPU local preserva la privacidad y dignidad.",
+            proofCpu: "30+ FPS en CPU pura",
+            proofSens: "98.3% de Sensibilidad",
+            proofAlerts: "Alertas Telegram al instante"
         },
         de: {
             langName: "Deutsch",
@@ -1044,7 +1064,16 @@ function initStep1Header() {
             signup: "Loslegen",
             themeDark: "Dunkel",
             themeLight: "Hell",
-            sentinelActive: "Wächter Aktiv"
+            sentinelActive: "Wächter Aktiv",
+            eyebrow: "VISION-WÄCHTER FÜR SENIOREN",
+            headline: "Intelligente Seniorenpflege & Echtzeit-Sicherheitswächter",
+            lead: "Ein intelligenter KI-Wächter, der Kamera-Feeds überwacht, Stürze und unassistierte Bettabgänge erkennt und sofortige visuelle Telegram-Warnungen an Angehörige sendet.",
+            ctaPrimary: "Live-Wächter Starten",
+            ctaSecondary: "So Funktioniert Es",
+            subtext: "Keine Wearables nötig. 100% On-Device CPU-Inferenz schützt die Privatsphäre und Würde.",
+            proofCpu: "30+ FPS Reine CPU",
+            proofSens: "98.3% Sturz-Sensitivität",
+            proofAlerts: "Sofortige Telegram-Warnungen"
         }
     };
 
@@ -1061,6 +1090,27 @@ function initStep1Header() {
         const signupBtnText = document.getElementById('nav-signup-text');
         if (loginBtnText) loginBtnText.textContent = t.login;
         if (signupBtnText) signupBtnText.textContent = t.signup;
+
+        // Hero Elements Translation
+        const eyebrowEl = document.getElementById('hero-eyebrow-text');
+        const headlineEl = document.getElementById('hero-headline');
+        const leadEl = document.getElementById('hero-lead');
+        const ctaPriEl = document.getElementById('hero-cta-primary-text');
+        const ctaSecEl = document.getElementById('hero-cta-secondary-text');
+        const subtextEl = document.getElementById('hero-subtext');
+        const proofCpuEl = document.getElementById('proof-cpu');
+        const proofSensEl = document.getElementById('proof-sens');
+        const proofAlertsEl = document.getElementById('proof-alerts');
+
+        if (eyebrowEl && t.eyebrow) eyebrowEl.textContent = t.eyebrow;
+        if (headlineEl && t.headline) headlineEl.textContent = t.headline;
+        if (leadEl && t.lead) leadEl.textContent = t.lead;
+        if (ctaPriEl && t.ctaPrimary) ctaPriEl.textContent = t.ctaPrimary;
+        if (ctaSecEl && t.ctaSecondary) ctaSecEl.textContent = t.ctaSecondary;
+        if (subtextEl && t.subtext) subtextEl.textContent = t.subtext;
+        if (proofCpuEl && t.proofCpu) proofCpuEl.textContent = t.proofCpu;
+        if (proofSensEl && t.proofSens) proofSensEl.textContent = t.proofSens;
+        if (proofAlertsEl && t.proofAlerts) proofAlertsEl.textContent = t.proofAlerts;
 
         langItems.forEach(item => {
             item.classList.toggle('active', item.dataset.lang === lang);
@@ -1121,6 +1171,910 @@ function initStep1Header() {
     if (btnSignup) {
         btnSignup.addEventListener('click', () => {
             alert('Step 1 Header Active! Get Started modal will be connected in Step 3.');
+        });
+    }
+}
+
+
+// ========================================================
+// STEP 2: SCANREVIEW HERO & LIVE AUTO DEMO SIMULATION
+// ========================================================
+function initStep2Hero() {
+    const landingView = document.getElementById('view-landing');
+    const appConsoleView = document.getElementById('view-app-console');
+
+    function showLanding() {
+        if (landingView) landingView.style.display = 'block';
+        if (appConsoleView) appConsoleView.style.display = 'none';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showAppConsole(tabId) {
+        if (landingView) landingView.style.display = 'none';
+        if (appConsoleView) appConsoleView.style.display = 'block';
+        if (tabId && typeof switchTab === 'function') {
+            switchTab(tabId);
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Expose router functions globally
+    window.showLandingView = showLanding;
+    window.showAppConsoleView = showAppConsole;
+
+    // View Switching event listeners
+    const btnHeroStart = document.getElementById('btn-hero-start');
+    const btnHeroDemo = document.getElementById('btn-hero-demo');
+    const btnReturnLanding = document.getElementById('btn-return-landing');
+    const brandLandingLink = document.getElementById('landing-brand-link');
+    const btnLoginNav = document.getElementById('btn-login-nav');
+    const btnSignupNav = document.getElementById('btn-signup-nav');
+
+    if (btnHeroDemo) {
+        btnHeroDemo.addEventListener('click', () => {
+            const demoStage = document.getElementById('demo');
+            if (demoStage) {
+                demoStage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+    }
+
+    if (btnReturnLanding) {
+        btnReturnLanding.addEventListener('click', showLanding);
+    }
+
+    if (brandLandingLink) {
+        brandLandingLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showLanding();
+        });
+    }
+
+    // Check if URL specifies app mode
+    if (window.location.hash === '#app' || window.location.search.includes('view=app')) {
+        showAppConsole();
+    }
+
+    // Live Pose Skeleton Canvas Simulation
+    initHeroPoseCanvas();
+}
+
+function initHeroPoseCanvas() {
+    const canvas = document.getElementById('hero-pose-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const fpsCounter = document.getElementById('stage-fps-counter');
+    const riskPill = document.getElementById('stage-risk-pill');
+    const statusPill = document.getElementById('stage-status-pill');
+    const noteCard = document.getElementById('stage-alert-note');
+    const noteTitle = document.getElementById('stage-note-title');
+    const noteDesc = document.getElementById('stage-note-desc');
+
+    let startTime = performance.now();
+    let mouseX = -100;
+    let mouseY = -100;
+
+    canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        mouseX = (e.clientX - rect.left) * (canvas.width / rect.width);
+        mouseY = (e.clientY - rect.top) * (canvas.height / rect.height);
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+        mouseX = -100;
+        mouseY = -100;
+    });
+
+    function render(now) {
+        const elapsed = (now - startTime) / 1000;
+        const cycle = elapsed % 12; // 12-second comprehensive cycle
+
+        const W = canvas.width;
+        const H = canvas.height;
+
+        // Clear canvas
+        ctx.fillStyle = '#060913';
+        ctx.fillRect(0, 0, W, H);
+
+        // Draw camera grid lines
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+        ctx.lineWidth = 1;
+        for (let x = 40; x < W; x += 40) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, H);
+            ctx.stroke();
+        }
+        for (let y = 30; y < H; y += 30) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(W, y);
+            ctx.stroke();
+        }
+
+        // Draw room perspective (Floor line & Bed outline)
+        ctx.strokeStyle = 'rgba(58, 63, 224, 0.15)';
+        ctx.lineWidth = 1.5;
+        // Floor line
+        ctx.beginPath();
+        ctx.moveTo(0, H - 35);
+        ctx.lineTo(W, H - 35);
+        ctx.stroke();
+
+        // Bed zone indicator
+        ctx.fillStyle = 'rgba(58, 63, 224, 0.06)';
+        ctx.fillRect(40, H - 120, 140, 85);
+        ctx.strokeRect(40, H - 120, 140, 85);
+        ctx.fillStyle = 'rgba(148, 163, 184, 0.4)';
+        ctx.font = '9px JetBrains Mono, monospace';
+        ctx.fillText('DESIGNATED BED ZONE', 48, H - 105);
+
+        // Determine current phase
+        let phase = 'SAFE';
+        let statusColor = '#22c55e';
+        let riskScore = 12.4;
+        let tInterpolate = 0;
+
+        // Keypoint positions
+        let headX = W * 0.55, headY = 65;
+        let spineX = W * 0.55, spineY = 100;
+        let hipX = W * 0.55, hipY = 135;
+        let leftKneeX = W * 0.52, leftKneeY = 175;
+        let rightKneeX = W * 0.58, rightKneeY = 175;
+        let leftAnkleX = W * 0.51, leftAnkleY = 215;
+        let rightAnkleX = W * 0.59, rightAnkleY = 215;
+        let leftShoulderX = W * 0.49, leftShoulderY = 85;
+        let rightShoulderX = W * 0.61, rightShoulderY = 85;
+        let leftHandX = W * 0.46, leftHandY = 125;
+        let rightHandX = W * 0.64, rightHandY = 125;
+
+        if (cycle < 4.0) {
+            // PHASE 1: SAFE (Walking & gentle swaying)
+            phase = 'SAFE';
+            statusColor = '#22c55e';
+            riskScore = 12.0 + Math.sin(cycle * 3) * 3.5;
+            
+            const sway = Math.sin(cycle * 3) * 6;
+            headX += sway;
+            spineX += sway * 0.8;
+            hipX += sway * 0.6;
+            leftAnkleY += Math.sin(cycle * 6) * 4;
+            rightAnkleY -= Math.sin(cycle * 6) * 4;
+
+            if (statusPill) {
+                statusPill.textContent = '● SAFE';
+                statusPill.style.background = '#22c55e';
+                statusPill.style.boxShadow = '0 0 10px rgba(34, 197, 94, 0.6)';
+            }
+            if (riskPill) {
+                riskPill.textContent = 'Risk: ' + riskScore.toFixed(1) + '%';
+                riskPill.style.background = 'rgba(34, 197, 94, 0.2)';
+                riskPill.style.color = '#86efac';
+                riskPill.style.borderColor = 'rgba(34, 197, 94, 0.4)';
+            }
+            if (noteCard) {
+                noteCard.style.borderLeftColor = '#22c55e';
+                const mark = noteCard.querySelector('.alert-mark');
+                if (mark) {
+                    mark.textContent = '🛡️';
+                    mark.style.background = 'rgba(34, 197, 94, 0.2)';
+                    mark.style.color = '#22c55e';
+                }
+            }
+            if (noteTitle) noteTitle.textContent = 'SAFE: Normal Posture';
+            if (noteDesc) noteDesc.textContent = 'Living Room · 12.4% Risk · Continuous CPU sentinel active';
+
+        } else if (cycle < 7.5) {
+            // PHASE 2: WARNING (Unassisted Bed-Exit / Leaning Anomaly)
+            phase = 'WARNING';
+            statusColor = '#f59e0b';
+            tInterpolate = (cycle - 4.0) / 3.5;
+            riskScore = 55.0 + tInterpolate * 22.0 + Math.sin(cycle * 5) * 4.0;
+
+            // Lean forward and bend knees
+            headX = (W * 0.55) - tInterpolate * 65;
+            headY = 65 + tInterpolate * 35;
+            spineX = (W * 0.55) - tInterpolate * 45;
+            spineY = 100 + tInterpolate * 20;
+            hipX = (W * 0.55) - tInterpolate * 25;
+            hipY = 135 + tInterpolate * 15;
+            leftShoulderX = headX - 15;
+            rightShoulderX = headX + 15;
+            leftHandX = headX - 25;
+            leftHandY = headY + 35;
+            rightHandX = headX + 30;
+            rightHandY = headY + 25;
+
+            if (statusPill) {
+                statusPill.textContent = '● WARNING';
+                statusPill.style.background = '#f59e0b';
+                statusPill.style.boxShadow = '0 0 10px rgba(245, 158, 11, 0.6)';
+            }
+            if (riskPill) {
+                riskPill.textContent = 'Risk: ' + riskScore.toFixed(1) + '%';
+                riskPill.style.background = 'rgba(245, 158, 11, 0.2)';
+                riskPill.style.color = '#fde68a';
+                riskPill.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+            }
+            if (noteCard) {
+                noteCard.style.borderLeftColor = '#f59e0b';
+                const mark = noteCard.querySelector('.alert-mark');
+                if (mark) {
+                    mark.textContent = '⚠️';
+                    mark.style.background = 'rgba(245, 158, 11, 0.2)';
+                    mark.style.color = '#f59e0b';
+                }
+            }
+            if (noteTitle) noteTitle.textContent = 'WARNING: Bed-Exit Hazard';
+            if (noteDesc) noteDesc.textContent = 'Bed Zone · Rapid angle shift detected · Pre-warning dispatched';
+
+        } else {
+            // PHASE 3: EMERGENCY (Sudden Catastrophic Fall onto Floor)
+            phase = 'EMERGENCY';
+            statusColor = '#ef4444';
+            tInterpolate = Math.min(1.0, (cycle - 7.5) / 1.5);
+            riskScore = 98.3;
+
+            // Rapid horizontal fall onto floor
+            headX = W * 0.38;
+            headY = H - 55 + Math.sin(cycle * 4) * 2;
+            spineX = W * 0.48;
+            spineY = H - 52;
+            hipX = W * 0.58;
+            hipY = H - 48;
+            leftKneeX = W * 0.68;
+            leftKneeY = H - 44;
+            rightKneeX = W * 0.70;
+            rightKneeY = H - 40;
+            leftAnkleX = W * 0.78;
+            leftAnkleY = H - 42;
+            rightAnkleX = W * 0.82;
+            rightAnkleY = H - 38;
+
+            leftShoulderX = headX + 18;
+            leftShoulderY = headY - 8;
+            rightShoulderX = headX + 18;
+            rightShoulderY = headY + 8;
+            leftHandX = headX - 15;
+            leftHandY = headY + 10;
+            rightHandX = headX + 12;
+            rightHandY = headY + 14;
+
+            if (statusPill) {
+                statusPill.textContent = '● EMERGENCY';
+                statusPill.style.background = '#ef4444';
+                statusPill.style.boxShadow = '0 0 12px rgba(239, 68, 68, 0.8)';
+            }
+            if (riskPill) {
+                riskPill.textContent = 'Risk: 98.3% CRITICAL';
+                riskPill.style.background = 'rgba(239, 68, 68, 0.25)';
+                riskPill.style.color = '#fca5a5';
+                riskPill.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+            }
+            if (noteCard) {
+                noteCard.style.borderLeftColor = '#ef4444';
+                const mark = noteCard.querySelector('.alert-mark');
+                if (mark) {
+                    mark.textContent = '🚨';
+                    mark.style.background = 'rgba(239, 68, 68, 0.2)';
+                    mark.style.color = '#ef4444';
+                }
+            }
+            if (noteTitle) noteTitle.textContent = 'EMERGENCY: Fall Detected';
+            if (noteDesc) noteDesc.textContent = 'Living Room · 98.3% BiLSTM Risk · Telegram Snapshot Sent';
+        }
+
+        // Draw bounding box
+        const minX = Math.min(headX, leftHandX, rightHandX, leftAnkleX) - 16;
+        const maxX = Math.max(headX, leftHandX, rightHandX, rightAnkleX) + 16;
+        const minY = Math.min(headY - 14, leftShoulderY, rightShoulderY) - 8;
+        const maxY = Math.max(leftAnkleY, rightAnkleY, hipY) + 8;
+
+        ctx.strokeStyle = statusColor;
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(minX, minY, maxX - minX, maxY - minY);
+
+        // Bounding box corner accents
+        const cornerLen = 8;
+        ctx.lineWidth = 3;
+        // Top-left
+        ctx.beginPath(); ctx.moveTo(minX, minY + cornerLen); ctx.lineTo(minX, minY); ctx.lineTo(minX + cornerLen, minY); ctx.stroke();
+        // Top-right
+        ctx.beginPath(); ctx.moveTo(maxX - cornerLen, minY); ctx.lineTo(maxX, minY); ctx.lineTo(maxX, minY + cornerLen); ctx.stroke();
+        // Bottom-left
+        ctx.beginPath(); ctx.moveTo(minX, maxY - cornerLen); ctx.lineTo(minX, maxY); ctx.lineTo(minX + cornerLen, maxY); ctx.stroke();
+        // Bottom-right
+        ctx.beginPath(); ctx.moveTo(maxX - cornerLen, maxY); ctx.lineTo(maxX, maxY); ctx.lineTo(maxX, maxY - cornerLen); ctx.stroke();
+
+        // Draw Skeleton Bones
+        ctx.strokeStyle = statusColor;
+        ctx.lineWidth = 2.5;
+        ctx.lineCap = 'round';
+
+        function drawBone(x1, y1, x2, y2) {
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+        }
+
+        // Torso & head
+        drawBone(headX, headY, spineX, spineY);
+        drawBone(spineX, spineY, hipX, hipY);
+        // Shoulders & Arms
+        drawBone(leftShoulderX, leftShoulderY, rightShoulderX, rightShoulderY);
+        drawBone(leftShoulderX, leftShoulderY, leftHandX, leftHandY);
+        drawBone(rightShoulderX, rightShoulderY, rightHandX, rightHandY);
+        // Legs
+        drawBone(hipX, hipY, leftKneeX, leftKneeY);
+        drawBone(leftKneeX, leftKneeY, leftAnkleX, leftAnkleY);
+        drawBone(hipX, hipY, rightKneeX, rightKneeY);
+        drawBone(rightKneeX, rightKneeY, rightAnkleX, rightAnkleY);
+
+        // Draw Skeleton Joints (MediaPipe keypoints)
+        const joints = [
+            [headX, headY, 6],
+            [spineX, spineY, 4],
+            [hipX, hipY, 5],
+            [leftShoulderX, leftShoulderY, 4],
+            [rightShoulderX, rightShoulderY, 4],
+            [leftHandX, leftHandY, 4],
+            [rightHandX, rightHandY, 4],
+            [leftKneeX, leftKneeY, 4],
+            [rightKneeX, rightKneeY, 4],
+            [leftAnkleX, leftAnkleY, 4],
+            [rightAnkleX, rightAnkleY, 4]
+        ];
+
+        joints.forEach(([jx, jy, r]) => {
+            ctx.beginPath();
+            ctx.arc(jx, jy, r, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = statusColor;
+            ctx.stroke();
+        });
+
+        // Interactive mouse crosshair if hovering
+        if (mouseX > 0 && mouseY > 0) {
+            ctx.strokeStyle = 'rgba(56, 189, 248, 0.7)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath(); ctx.moveTo(mouseX, 0); ctx.lineTo(mouseX, H); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(0, mouseY); ctx.lineTo(W, mouseY); ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = '#38bdf8';
+            ctx.font = '10px JetBrains Mono, monospace';
+            ctx.fillText('INSPECT: [X:' + Math.round(mouseX) + ', Y:' + Math.round(mouseY) + ']', mouseX + 8, mouseY - 8);
+        }
+
+        // Live realistic CPU FPS fluctuation
+        if (fpsCounter && Math.floor(elapsed * 2) % 3 === 0) {
+            const simulatedFps = (38.2 + Math.sin(elapsed * 4) * 1.6).toFixed(1);
+            fpsCounter.textContent = simulatedFps + ' FPS (CPU)';
+        }
+
+        requestAnimationFrame(render);
+    }
+
+    requestAnimationFrame(render);
+}
+
+
+// ========================================================
+// STEP 3: SUPABASE & CAREGIVER AUTHENTICATION SYSTEM
+// ========================================================
+let supabaseAuthClient = null;
+
+async function setupSupabaseClient() {
+    try {
+        const res = await fetch('/api/config');
+        const cfg = await res.json();
+        if (cfg.supabase_active && cfg.supabase_url && cfg.supabase_key && window.supabase) {
+            supabaseAuthClient = window.supabase.createClient(cfg.supabase_url, cfg.supabase_key);
+            console.log("AegisCare: Connected to Supabase Auth cloud.");
+        }
+    } catch (e) {
+        console.warn("AegisCare: Supabase cloud config notice:", e);
+    }
+}
+
+function getStoredUser() {
+    try {
+        const data = localStorage.getItem('aegis_auth_user');
+        return data ? JSON.parse(data) : null;
+    } catch (e) {
+        return null;
+    }
+}
+
+function setStoredUser(user) {
+    if (user) {
+        localStorage.setItem('aegis_auth_user', JSON.stringify(user));
+    } else {
+        localStorage.removeItem('aegis_auth_user');
+    }
+    updateAuthUI();
+}
+
+function updateAuthUI() {
+    const user = getStoredUser();
+    const btnLoginNav = document.getElementById('btn-login-nav');
+    const btnSignupNav = document.getElementById('btn-signup-nav');
+    const navUserPill = document.getElementById('nav-user-pill');
+    const navUserName = document.getElementById('nav-user-name');
+    const navUserRole = document.getElementById('nav-user-role');
+    const navUserAvatar = document.getElementById('nav-user-avatar');
+    const appDisplayName = document.getElementById('app-user-display-name');
+
+    if (user) {
+        if (btnLoginNav) btnLoginNav.style.display = 'none';
+        if (btnSignupNav) btnSignupNav.style.display = 'none';
+        if (navUserPill) navUserPill.style.display = 'flex';
+        
+        if (navUserName) navUserName.textContent = user.name || user.email;
+        if (navUserRole) navUserRole.textContent = user.role ? user.role.split('/')[0].trim() : 'Guardian';
+        if (appDisplayName) appDisplayName.textContent = user.name || user.email;
+
+        const appHeaderName = document.getElementById('app-header-name');
+        const appAvatar = document.getElementById('app-avatar-circle');
+        if (appHeaderName) appHeaderName.textContent = user.name || user.email;
+
+        // Initials avatar
+        if (user.name) {
+            const parts = user.name.split(' ');
+            const initials = parts.length > 1 ? (parts[0][0] + parts[1][0]).toUpperCase() : parts[0].substring(0, 2).toUpperCase();
+            if (navUserAvatar) navUserAvatar.textContent = initials;
+            if (appAvatar) appAvatar.textContent = initials;
+        }
+    } else {
+        if (btnLoginNav) btnLoginNav.style.display = 'inline-flex';
+        if (btnSignupNav) btnSignupNav.style.display = 'inline-flex';
+        if (navUserPill) navUserPill.style.display = 'none';
+    }
+}
+
+function openAuthModal(mode = 'login', customNotice = null) {
+    const modal = document.getElementById('auth-modal');
+    if (!modal) return;
+
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    switchAuthTab(mode);
+
+    const banner = document.getElementById('auth-msg-banner');
+    if (banner) {
+        if (customNotice) {
+            banner.className = 'auth-msg-banner banner-error';
+            banner.innerHTML = `<i class="fa-solid fa-lock"></i> ${customNotice}`;
+            banner.style.display = 'flex';
+        } else {
+            banner.style.display = 'none';
+        }
+    }
+}
+
+function closeAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if (!modal) return;
+
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+function switchAuthTab(tab) {
+    const tabLogin = document.getElementById('tab-btn-login');
+    const tabSignup = document.getElementById('tab-btn-signup');
+    const formLogin = document.getElementById('form-auth-login');
+    const formSignup = document.getElementById('form-auth-signup');
+    const banner = document.getElementById('auth-msg-banner');
+
+    if (banner) banner.style.display = 'none';
+
+    if (tab === 'signup') {
+        if (tabSignup) {
+            tabSignup.classList.add('active');
+            tabSignup.setAttribute('aria-selected', 'true');
+        }
+        if (tabLogin) {
+            tabLogin.classList.remove('active');
+            tabLogin.setAttribute('aria-selected', 'false');
+        }
+        if (formLogin) formLogin.style.display = 'none';
+        if (formSignup) formSignup.style.display = 'block';
+        const nameInput = document.getElementById('signup-name');
+        if (nameInput) nameInput.focus();
+    } else {
+        if (tabLogin) {
+            tabLogin.classList.add('active');
+            tabLogin.setAttribute('aria-selected', 'true');
+        }
+        if (tabSignup) {
+            tabSignup.classList.remove('active');
+            tabSignup.setAttribute('aria-selected', 'false');
+        }
+        if (formLogin) formLogin.style.display = 'block';
+        if (formSignup) formSignup.style.display = 'none';
+        const emailInput = document.getElementById('login-email');
+        if (emailInput) emailInput.focus();
+    }
+}
+
+function initAuthSystem() {
+    setupSupabaseClient();
+    updateAuthUI();
+
+    // Check if user is already authenticated
+    const initialUser = getStoredUser();
+    if (!initialUser) {
+        // Enforce Landing View by default
+        const landingView = document.getElementById('view-landing');
+        const appConsoleView = document.getElementById('view-app-console');
+        if (landingView) landingView.style.display = 'block';
+        if (appConsoleView) appConsoleView.style.display = 'none';
+    } else {
+        // If query param or hash requested app, allow it
+        if (window.location.hash === '#app' || window.location.search.includes('view=app')) {
+            const landingView = document.getElementById('view-landing');
+            const appConsoleView = document.getElementById('view-app-console');
+            if (landingView) landingView.style.display = 'none';
+            if (appConsoleView) appConsoleView.style.display = 'block';
+        }
+    }
+
+    // Modal Trigger Listeners
+    const btnLoginNav = document.getElementById('btn-login-nav');
+    const btnSignupNav = document.getElementById('btn-signup-nav');
+    const btnHeroStart = document.getElementById('btn-hero-start');
+    const btnCloseModal = document.getElementById('btn-close-auth-modal');
+    const authModal = document.getElementById('auth-modal');
+
+    if (btnLoginNav) {
+        btnLoginNav.onclick = (e) => {
+            e.preventDefault();
+            openAuthModal('login');
+        };
+    }
+
+    if (btnSignupNav) {
+        btnSignupNav.onclick = (e) => {
+            e.preventDefault();
+            openAuthModal('signup');
+        };
+    }
+
+    if (btnHeroStart) {
+        btnHeroStart.onclick = (e) => {
+            e.preventDefault();
+            const user = getStoredUser();
+            if (user) {
+                // User is authenticated, unlock console
+                const landingView = document.getElementById('view-landing');
+                const appConsoleView = document.getElementById('view-app-console');
+                if (landingView) landingView.style.display = 'none';
+                if (appConsoleView) appConsoleView.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                // User must log in first
+                openAuthModal('login', 'Please log in or create an account to access the Sentinel Hub.');
+            }
+        };
+    }
+
+    if (btnCloseModal) {
+        btnCloseModal.addEventListener('click', closeAuthModal);
+    }
+
+    if (authModal) {
+        authModal.addEventListener('click', (e) => {
+            if (e.target === authModal) closeAuthModal();
+        });
+    }
+
+    // Switch Tab buttons inside modal
+    const tabBtnLogin = document.getElementById('tab-btn-login');
+    const tabBtnSignup = document.getElementById('tab-btn-signup');
+    const linkToSignup = document.getElementById('link-to-signup');
+    const linkToLogin = document.getElementById('link-to-login');
+
+    if (tabBtnLogin) tabBtnLogin.addEventListener('click', () => switchAuthTab('login'));
+    if (tabBtnSignup) tabBtnSignup.addEventListener('click', () => switchAuthTab('signup'));
+    if (linkToSignup) linkToSignup.addEventListener('click', (e) => { e.preventDefault(); switchAuthTab('signup'); });
+    if (linkToLogin) linkToLogin.addEventListener('click', (e) => { e.preventDefault(); switchAuthTab('login'); });
+
+    // Password visibility toggles
+    document.querySelectorAll('.btn-toggle-pw').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            if (!input) return;
+            const isPw = input.type === 'password';
+            input.type = isPw ? 'text' : 'password';
+            btn.innerHTML = isPw ? '<i class="fa-solid fa-eye-slash"></i>' : '<i class="fa-solid fa-eye"></i>';
+        });
+    });
+
+    // Form Submissions
+    const formLogin = document.getElementById('form-auth-login');
+    const formSignup = document.getElementById('form-auth-signup');
+    const banner = document.getElementById('auth-msg-banner');
+
+    function showBanner(text, isError = false) {
+        if (!banner) return;
+        banner.className = `auth-msg-banner ${isError ? 'banner-error' : 'banner-success'}`;
+        banner.innerHTML = `<i class="fa-solid ${isError ? 'fa-triangle-exclamation' : 'fa-circle-check'}"></i> ${text}`;
+        banner.style.display = 'flex';
+    }
+
+    // 1. Handle Login
+    if (formLogin) {
+        formLogin.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            const submitBtn = document.getElementById('btn-submit-login');
+
+            if (!email || !password) {
+                showBanner("Please fill in both email and password.", true);
+                return;
+            }
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+            }
+
+            try {
+                // Optional Supabase auth
+                if (supabaseAuthClient) {
+                    try {
+                        const { data, error } = await supabaseAuthClient.auth.signInWithPassword({ email, password });
+                        if (error) console.warn("Supabase auth warning:", error.message);
+                    } catch (err) {
+                        console.warn("Supabase auth bypass:", err);
+                    }
+                }
+
+                // Backend Auth Verification
+                const resp = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await resp.json();
+
+                if (!resp.ok) {
+                    showBanner(data.detail || "Invalid login credentials. Please try again.", true);
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Log In to Sentinel Hub';
+                    }
+                    return;
+                }
+
+                // Success
+                showBanner(`Welcome back, ${data.user.name}! Unlocking Sentinel Hub...`, false);
+                setStoredUser(data.user);
+
+                setTimeout(() => {
+                    closeAuthModal();
+                    // Transition to App Console
+                    const landingView = document.getElementById('view-landing');
+                    const appConsoleView = document.getElementById('view-app-console');
+                    if (landingView) landingView.style.display = 'none';
+                    if (appConsoleView) appConsoleView.style.display = 'block';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Log In to Sentinel Hub';
+                    }
+                }, 600);
+
+            } catch (err) {
+                showBanner("Network error during login: " + err.message, true);
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Log In to Sentinel Hub';
+                }
+            }
+        });
+    }
+
+    // 2. Handle Sign Up / Get Started
+    if (formSignup) {
+        formSignup.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
+            const role = document.getElementById('signup-role').value;
+            const password = document.getElementById('signup-password').value;
+            const submitBtn = document.getElementById('btn-submit-signup');
+
+            if (!name || !email || !password) {
+                showBanner("Please fill in all required fields.", true);
+                return;
+            }
+
+            if (password.length < 6) {
+                showBanner("Password must be at least 6 characters.", true);
+                return;
+            }
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating Account...';
+            }
+
+            try {
+                // Optional Supabase cloud signup
+                if (supabaseAuthClient) {
+                    try {
+                        const { data, error } = await supabaseAuthClient.auth.signUp({
+                            email,
+                            password,
+                            options: { data: { full_name: name, role } }
+                        });
+                        if (error) console.warn("Supabase signup warning:", error.message);
+                    } catch (err) {
+                        console.warn("Supabase signup bypass:", err);
+                    }
+                }
+
+                // Backend Registration
+                const resp = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password, role })
+                });
+
+                const data = await resp.json();
+
+                if (!resp.ok) {
+                    showBanner(data.detail || "Registration failed. An account with this email may already exist.", true);
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account & Unlock App';
+                    }
+                    return;
+                }
+
+                // Success
+                showBanner(`Account created! Welcome, ${data.user.name}. Entering Sentinel Hub...`, false);
+                setStoredUser(data.user);
+
+                setTimeout(() => {
+                    closeAuthModal();
+                    // Transition to App Console
+                    const landingView = document.getElementById('view-landing');
+                    const appConsoleView = document.getElementById('view-app-console');
+                    if (landingView) landingView.style.display = 'none';
+                    if (appConsoleView) appConsoleView.style.display = 'block';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account & Unlock App';
+                    }
+                }, 600);
+
+            } catch (err) {
+                showBanner("Network error during sign up: " + err.message, true);
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account & Unlock App';
+                }
+            }
+        });
+    }
+
+    // 3. Live Animated Ticker & Interactive PPT Status Pills
+    function initLandingLiveDynamics() {
+        const ts1 = document.getElementById('landing-tick-ts-1');
+        const ts2 = document.getElementById('landing-tick-ts-2');
+        const ts3 = document.getElementById('landing-tick-ts-3');
+
+        function updateLandingTimes() {
+            if (!ts3) return;
+            const now = new Date();
+            const pad = (n) => String(n).padStart(2, '0');
+            const h = pad(now.getHours());
+            const m = pad(now.getMinutes());
+            const s = pad(now.getSeconds());
+
+            ts3.textContent = `${h}:${m}:${s}`;
+            
+            // Prior events slightly in the past
+            const prevSec = (now.getSeconds() + 35) % 60;
+            const prevMin = (now.getMinutes() === 0 ? 59 : now.getMinutes() - 1);
+            ts2.textContent = `${h}:${pad(prevMin)}:${pad(prevSec)}`;
+            
+            const earlyMin = (prevMin <= 3 ? 55 : prevMin - 3);
+            if (ts1) ts1.textContent = `${h}:${pad(earlyMin)}:10`;
+        }
+
+        if (ts3) {
+            updateLandingTimes();
+            setInterval(updateLandingTimes, 2500);
+        }
+
+        // Interactive status pills
+        document.querySelectorAll('.glass-status-pill').forEach(pill => {
+            pill.addEventListener('click', () => {
+                const type = pill.getAttribute('data-status-preview');
+                if (type === 'safe') {
+                    showBanner("● [SAFE LOG] Posture classified as Normal/Sitting (8% hazard index). Continuous on-device sentinel logging active.", false);
+                } else if (type === 'warn') {
+                    showBanner("▲ [WARNING CHECK-IN] Rapid positional shift detected (42% hazard index). Caregiver audit alert prepared.", false);
+                } else if (type === 'emerg') {
+                    showBanner("🚨 [EMERGENCY SENTINEL DISPATCH] Ground impact signature confirmed! Automated Telegram webhook dispatched in <200ms.", true);
+                }
+            });
+        });
+    }
+
+    initLandingLiveDynamics();
+
+    // 4. Handle Sign Out (Both Navbar & App Return Bar)
+    function handleSignOut() {
+        if (supabaseAuthClient) {
+            try { supabaseAuthClient.auth.signOut(); } catch (e) {}
+        }
+        setStoredUser(null);
+
+        // Hide app console, reveal landing page
+        const landingView = document.getElementById('view-landing');
+        const appConsoleView = document.getElementById('view-app-console');
+        if (landingView) landingView.style.display = 'block';
+        if (appConsoleView) appConsoleView.style.display = 'none';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        alert("Signed out successfully. You have returned to the AegisCare AI Landing Page.");
+    }
+
+    const btnNavLogout = document.getElementById('btn-nav-logout');
+    const btnAppLogout = document.getElementById('btn-app-logout');
+
+    if (btnNavLogout) btnNavLogout.addEventListener('click', handleSignOut);
+    if (btnAppLogout) btnAppLogout.addEventListener('click', handleSignOut);
+
+    // Landing Band and Footer CTA listeners
+    const btnBandStart = document.getElementById('btn-band-get-started');
+    const footerLinkLogin = document.getElementById('footer-link-login');
+    const footerLinkSignup = document.getElementById('footer-link-signup');
+
+    if (btnBandStart) {
+        btnBandStart.addEventListener('click', () => {
+            const user = getStoredUser();
+            if (user) {
+                const landingView = document.getElementById('view-landing');
+                const appConsoleView = document.getElementById('view-app-console');
+                if (landingView) landingView.style.display = 'none';
+                if (appConsoleView) appConsoleView.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                openAuthModal('signup');
+            }
+        });
+    }
+
+    if (footerLinkLogin) {
+        footerLinkLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            openAuthModal('login');
+        });
+    }
+
+    if (footerLinkSignup) {
+        footerLinkSignup.addEventListener('click', (e) => {
+            e.preventDefault();
+            openAuthModal('signup');
         });
     }
 }
