@@ -45,6 +45,21 @@ function initTabs() {
         });
     });
 
+    // Check initial query parameter or hash
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialTab = urlParams.get('tab') || (window.location.hash ? window.location.hash.replace('#', '') : null);
+    if (initialTab && document.getElementById(initialTab)) {
+        switchTab(initialTab);
+    }
+
+    window.addEventListener('hashchange', () => {
+        const target = window.location.hash.replace('#', '');
+        if (target && document.getElementById(target)) {
+            switchTab(target);
+        }
+    });
+
+
     // Quick SOS header trigger switches to SOS tab
     const headerSos = document.getElementById('header-sos-trigger');
     if (headerSos) {
@@ -698,8 +713,7 @@ async function triggerEmergencySOS() {
         const res = await fetch('/api/sos-alert', { method: 'POST', body: formData });
         const data = await res.json();
 
-        alert('🚨 EMERGENCY SOS DISPATCHED!
-Caregiver notified on Telegram (Msg #' + (data.telegram_status?.message_id || 'OK') + '). Nursing station alerted.');
+        alert('🚨 EMERGENCY SOS DISPATCHED! Caregiver notified on Telegram.');
         loadActivityLogs();
     } catch (err) {
         alert('Emergency SOS logged locally. Caregiver connection notice: ' + err.message);
@@ -771,10 +785,7 @@ async function simulateHazardScenario(alertType, message) {
         const res = await fetch('/api/sos-alert', { method: 'POST', body: formData });
         const data = await res.json();
 
-        alert(`🛡️ SIMULATION DISPATCHED:
-${message}
-
-Telegram Alert Sent (Msg #${data.telegram_status?.message_id || 'OK'}). Event added to Care Ledger.`);
+        alert('🛡️ SIMULATION DISPATCHED: ' + message);
         loadActivityLogs();
         loadDailyDigest();
     } catch (err) {
