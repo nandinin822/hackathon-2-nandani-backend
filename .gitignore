@@ -1,0 +1,24 @@
+# Security: Protect local environment secrets
+.env
+.env.local
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+
+# Uploads & Temp files
+uploads/*
+!uploads/.gitkeep
+static/processed/*
+!static/processed/.gitkeep
+logs/*.log
+*.log
+
+# OS metadata
+.DS_Store
+Thumbs.db
