@@ -110,6 +110,37 @@ def send_telegram_notification(text: str, image_bytes: Optional[bytes] = None) -
     except Exception as e:
         return {"success": False, "error": str(e)}
 
+
+def send_telegram_voice(caption: str, voice_bytes: bytes, filename: str = "voice_alert.ogg") -> dict:
+    """Send voice note / audio emergency message to Telegram."""
+    bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
+    chat_id = os.getenv("TELEGRAM_CHAT_ID")
+    if not bot_token or not chat_id:
+        return {"success": False, "reason": "Telegram credentials not configured"}
+    try:
+        url = f"https://api.telegram.org/bot{bot_token}/sendVoice"
+        files = {"voice": (filename, voice_bytes, "audio/ogg")}
+        data = {"chat_id": chat_id, "caption": caption, "parse_mode": "HTML"}
+        res = requests.post(url, data=data, files=files, timeout=15)
+        res_json = res.json()
+        if res.status_code == 200 and res_json.get("ok"):
+            return {"success": True, "message_id": res_json.get("result", {}).get("message_id")}
+        
+        # Fallback to sendAudio if sendVoice rejects codec
+        url_audio = f"https://api.telegram.org/bot{bot_token}/sendAudio"
+        files_audio = {"audio": (filename, voice_bytes, "audio/webm")}
+        res_audio = requests.post(url_audio, data=data, files=files_audio, timeout=15)
+        res_audio_json = res_audio.json()
+        if res_audio.status_code == 200 and res_audio_json.get("ok"):
+            return {"success": True, "message_id": res_audio_json.get("result", {}).get("message_id")}
+            
+        note_info = f"""{caption}
+
+<i>(Audio note payload: {len(voice_bytes)} bytes)</i>"""
+        return send_telegram_notification(note_info)
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
 def analyze_with_gemini_vision(image_bytes: bytes) -> Optional[dict]:
     """Call Gemini Vision API to evaluate single camera snapshot."""
     api_key = os.getenv("GEMINI_API_KEY")
@@ -389,6 +420,97 @@ async def analyze_video_endpoint(
     except Exception as e:
         print(f"Video analysis error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/sos-alert")
+async def trigger_sos_alert(
+    alert_type: str = Form("sos"),
+    message: Optional[str] = Form(None),
+    voice_note: Optional[UploadFile] = File(None),
+    snapshot: Optional[UploadFile] = File(None)
+):
+    """
+    Dispatches immediate emergency SOS alerts, voice messages, panic alerts,
+    or bed-exit warnings to caregivers via Telegram and appends to activity log.
+    """
+    current_time = time.strftime("%I:%M:%S %p")
+    user_msg = message.strip() if message else ""
+    
+    if alert_type == "voice_note":
+        status_code = "EMERGENCY_VOICE_NOTE"
+        act_title = "Patient Voice Emergency Note"
+        caption = (
+            "🎙️ <b>AEGISCARE EMERGENCY VOICE NOTE</b>\n"
+            "━━━━━━━━━━━━━━━━━━━\n"
+            "<b>Patient:</b> Eleanor Vance (Room 102)\n"
+            f"<b>Message:</b> {user_msg or 'Audio emergency message recorded.'}\n"
+            f"<b>Time:</b> {current_time}\n"
+            "<b>Action:</b> Immediate caregiver check-in requested."
+        )
+    elif alert_type == "bed_exit":
+        status_code = "WARNING_BED_EXIT"
+        act_title = "Unassisted Bed-Exit Detected"
+        caption = (
+            "⚠️ <b>AEGISCARE BED-EXIT HAZARD ALERT</b>\n"
+            "━━━━━━━━━━━━━━━━━━━\n"
+            "<b>Location:</b> Bedroom Sentinel Cam\n"
+            "<b>Event:</b> High fall-risk patient attempted unassisted transfer/standing.\n"
+            f"<b>Observation:</b> {user_msg or 'Unsteady trunk elevation without walker detected.'}\n"
+            f"<b>Time:</b> {current_time}\n"
+            "<b>Action:</b> Nurse / Caregiver assist patient before ambulation."
+        )
+    elif alert_type == "panic":
+        status_code = "EMERGENCY_PANIC"
+        act_title = "Patient Panic / Distress Alert"
+        caption = (
+            "🚨 <b>PATIENT PANIC CALL ACTIVATED</b>\n"
+            "━━━━━━━━━━━━━━━━━━━\n"
+            "<b>Patient:</b> Eleanor Vance\n"
+            f"<b>Reason:</b> {user_msg or 'Severe panic / sudden distress reported.'}\n"
+            f"<b>Time:</b> {current_time}\n"
+            "<b>Action:</b> Immediate in-person caregiver assistance."
+        )
+    else:
+        status_code = "EMERGENCY_SOS"
+        act_title = "Emergency SOS Triggered"
+        caption = (
+            "🚨 <b>CRITICAL EMERGENCY SOS TRIGGERED</b>\n"
+            "━━━━━━━━━━━━━━━━━━━\n"
+            "<b>Patient:</b> Eleanor Vance (Room 102)\n"
+            f"<b>Note:</b> {user_msg or 'One-touch emergency call triggered.'}\n"
+            f"<b>Time:</b> {current_time}\n"
+            "<b>Action:</b> Urgent emergency dispatch required."
+        )
+
+    telegram_res = None
+    if voice_note and voice_note.filename:
+        voice_bytes = await voice_note.read()
+        filename = voice_note.filename or "patient_voice.ogg"
+        telegram_res = send_telegram_voice(caption, voice_bytes, filename=filename)
+    elif snapshot and snapshot.filename:
+        snap_bytes = await snapshot.read()
+        telegram_res = send_telegram_notification(caption, image_bytes=snap_bytes)
+    else:
+        telegram_res = send_telegram_notification(caption)
+
+    clean_details = user_msg or caption.replace("<b>", "").replace("</b>", "").replace("━━━━━━━━━━━━━━━━━━━\n", "")
+    log_entry = {
+        "id": f"log-{int(time.time())}",
+        "timestamp": current_time,
+        "activity": act_title,
+        "status": status_code,
+        "details": clean_details,
+        "alert_sent": telegram_res.get("success", False) if telegram_res else False
+    }
+    activity_logs.insert(0, log_entry)
+
+    return {
+        "success": True,
+        "alert_type": alert_type,
+        "log_entry": log_entry,
+        "telegram_status": telegram_res
+    }
+
 
 @app.get("/api/logs")
 def get_logs():
