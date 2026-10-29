@@ -197,17 +197,122 @@ def analyze_with_gemini_vision(image_bytes: bytes) -> Optional[dict]:
 
 
 
+
+import hashlib
+import uuid
+import datetime
+
+class AuthRegisterRequest(BaseModel):
+    name: str
+    email: str
+    password: str
+    role: Optional[str] = "Family Member / Guardian"
+
+class AuthLoginRequest(BaseModel):
+    email: str
+    password: str
+
+USERS_FILE = BACKEND_ROOT / "users.json"
+
+def load_users():
+    if not USERS_FILE.exists():
+        default_users = {
+            "caregiver@family.org": {
+                "id": "usr_demo_1",
+                "name": "Sarah Connor",
+                "email": "caregiver@family.org",
+                "password_hash": hashlib.sha256("password123".encode()).hexdigest(),
+                "role": "Family Member / Guardian",
+                "created_at": "2026-10-29T10:00:00Z"
+            }
+        }
+        with open(USERS_FILE, "w") as f:
+            json.dump(default_users, f, indent=2)
+        return default_users
+    try:
+        with open(USERS_FILE, "r") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+def save_users(users_dict):
+    with open(USERS_FILE, "w") as f:
+        json.dump(users_dict, f, indent=2)
+
+@app.post("/api/auth/register")
+def register_user(req: AuthRegisterRequest):
+    users = load_users()
+    email_key = req.email.strip().lower()
+    if email_key in users:
+        raise HTTPException(status_code=400, detail="An account with this email already exists.")
+    user_id = f"usr_{int(time.time())}_{uuid.uuid4().hex[:6]}"
+    user_obj = {
+        "id": user_id,
+        "name": req.name.strip(),
+        "email": email_key,
+        "password_hash": hashlib.sha256(req.password.encode()).hexdigest(),
+        "role": req.role or "Family Member / Guardian",
+        "created_at": datetime.datetime.now().isoformat()
+    }
+    users[email_key] = user_obj
+    save_users(users)
+    return {
+        "status": "success",
+        "message": "Caregiver account created successfully.",
+        "user": {
+            "id": user_id,
+            "name": user_obj["name"],
+            "email": user_obj["email"],
+            "role": user_obj["role"]
+        }
+    }
+
+@app.post("/api/auth/login")
+def login_user(req: AuthLoginRequest):
+    users = load_users()
+    email_key = req.email.strip().lower()
+    user = users.get(email_key)
+    if not user:
+        for u in users.values():
+            if u.get("name", "").lower() == email_key:
+                user = u
+                break
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid email or password.")
+    
+    expected_hash = user.get("password_hash")
+    input_hash = hashlib.sha256(req.password.encode()).hexdigest()
+    if expected_hash != input_hash:
+        raise HTTPException(status_code=401, detail="Invalid email or password.")
+
+    return {
+        "status": "success",
+        "message": "Login successful.",
+        "user": {
+            "id": user["id"],
+            "name": user["name"],
+            "email": user["email"],
+            "role": user["role"]
+        }
+    }
+
+
 @app.get("/api/config")
 def get_config():
     """Returns current integration status."""
     has_gemini = bool(os.getenv("GEMINI_API_KEY"))
     has_telegram = bool(os.getenv("TELEGRAM_BOT_TOKEN") and os.getenv("TELEGRAM_CHAT_ID"))
+    sb_url = os.getenv("SUPABASE_URL", "")
+    sb_key = os.getenv("SUPABASE_KEY", os.getenv("SUPABASE_ANON_KEY", ""))
     return {
         "gemini_active": has_gemini,
         "telegram_active": has_telegram,
         "bot_token_set": bool(os.getenv("TELEGRAM_BOT_TOKEN")),
         "chat_id_set": bool(os.getenv("TELEGRAM_CHAT_ID")),
-        "fall_pipeline_active": FALL_DETECTOR_AVAILABLE
+        "fall_pipeline_active": FALL_DETECTOR_AVAILABLE,
+        "supabase_active": bool(sb_url and sb_key),
+        "supabase_url": sb_url,
+        "supabase_key": sb_key
     }
 
 @app.post("/api/config/telegram")
