@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AegisCare AI — Smart Vision Guardian for Elderly Care</title>
+    <meta name="description" content="Intelligent, privacy-focused computer vision sentinel for eldercare. Detects falls, unassisted bed-exits, and distress postures with instant caregiver voice and photo notifications.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="app-header">
+        <div class="nav-container">
+            <div class="brand-group">
+                <div class="brand-logo">
+                    <i class="fa-solid fa-shield-heart"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-name">AegisCare<span class="accent-text">AI</span></span>
+                    <span class="brand-tagline">Vision Sentinel for Eldercare</span>
+                </div>
+            </div>
+
+            <!-- Main Menu Tabs -->
+            <nav class="nav-tabs-container" role="tablist">
+                <button class="tab-btn active" data-tab="tab-sentinel" role="tab" aria-selected="true">
+                    <i class="fa-solid fa-house-chimney-medical"></i>
+                    <span>Sentinel Hub</span>
+                </button>
+                <button class="tab-btn" data-tab="tab-lab" role="tab" aria-selected="false">
+                    <i class="fa-solid fa-flask-vial"></i>
+                    <span>Video Lab</span>
+                </button>
+                <button class="tab-btn highlight-tab" data-tab="tab-sos" role="tab" aria-selected="false">
+                    <i class="fa-solid fa-microphone-lines"></i>
+                    <span>SOS & Voice</span>
+                </button>
+                <button class="tab-btn" data-tab="tab-scenarios" role="tab" aria-selected="false">
+                    <i class="fa-solid fa-brain"></i>
+                    <span>Risk Scenarios</span>
+                </button>
+                <button class="tab-btn" data-tab="tab-timeline" role="tab" aria-selected="false">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>Care Ledger</span>
+                </button>
+                <button class="tab-btn" data-tab="tab-settings" role="tab" aria-selected="false">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span>Architecture</span>
+                </button>
+            </nav>
+
+            <!-- Header Quick Actions & Telemetry -->
+            <div class="header-actions">
+                <div class="status-badge-group">
+                    <div class="status-pill status-active" id="pipeline-status-pill">
+                        <span class="status-dot pulse"></span>
+                        <span class="status-label">Sentinel Active</span>
+                    </div>
+                    <div class="status-pill status-telegram" id="telegram-status-pill" title="Telegram alerts synced">
+                        <i class="fa-brands fa-telegram"></i>
+                        <span class="status-label">Telegram Online</span>
+                    </div>
+                </div>
+
+                <button class="header-sos-btn" id="header-sos-trigger" title="Quick Emergency Help">
+                    <span class="sos-icon-pulse"><i class="fa-solid fa-bell"></i></span>
+                    <span class="sos-btn-text">SOS Call</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container with Tab Panels -->
+    <main class="app-main">
+
+        <!-- ================= TAB 1: SENTINEL HUB & FORECASTING ================= -->
+        <section class="tab-panel active" id="tab-sentinel" role="tabpanel">
+            
+            <!-- Patient Telemetry & Executive Status Strip -->
+            <div class="telemetry-banner glass-card">
+                <div class="telemetry-profile">
+                    <div class="profile-avatar">
+                        <i class="fa-solid fa-user-nurse"></i>
+                    </div>
+                    <div class="profile-info">
+                        <div class="patient-title">
+                            <h3>Eleanor Vance</h3>
+                            <span class="risk-badge risk-high">High Fall Risk</span>
+                            <span class="room-badge">Suite 102 (Bedroom Cam)</span>
+                        </div>
+                        <p class="profile-meta">Age 78 &bull; Mobility: Assisted Walker &bull; Night Exit Watch Active</p>
+                    </div>
+                </div>
+
+                <div class="telemetry-stats">
+                    <div class="stat-box">
+                        <span class="stat-label">Current Posture</span>
+                        <span class="stat-value text-safe" id="live-posture-text">Resting in Bed</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Bed-Exit Hazard</span>
+                        <span class="stat-value text-safe" id="live-bedexit-text">Safe (In Bed)</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Risk Probability</span>
+                        <span class="stat-value text-cyan" id="live-risk-val">8% (Safe)</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Edge Throughput</span>
+                        <span class="stat-value">31.4 FPS <small class="text-muted">(CPU)</small></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sentinel Live Console & Forecasting Workspace -->
+            <div class="sentinel-grid">
+                
+                <!-- Video Stream Feed & Interactive HUD -->
+                <div class="sentinel-feed-card glass-card">
+                    <div class="card-header-flex">
+                        <div class="feed-title-wrap">
+                            <span class="live-recording-dot"></span>
+                            <h4>Real-Time Sentinel Vision & Pose Forecasting</h4>
+                        </div>
+                        
+                        <!-- Feed Source Controls -->
+                        <div class="feed-controls">
+                            <button class="feed-btn active" id="feed-src-cam" title="Toggle Live Webcam">
+                                <i class="fa-solid fa-camera"></i> Live Camera
+                            </button>
+                            <button class="feed-btn" id="feed-src-fall" title="Load Fall Benchmark Feed">
+                                <i class="fa-solid fa-person-falling"></i> Fall Feed
+                            </button>
+                            <button class="feed-btn" id="feed-src-walk" title="Load Walking Benchmark Feed">
+                                <i class="fa-solid fa-person-walking"></i> Walking Feed
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="video-hud-wrapper">
+                        <!-- Camera / Stream Video Elements -->
+                        <video id="sentinel-live-video" autoplay playsinline muted class="sentinel-video-elem"></video>
+                        <canvas id="sentinel-hud-canvas" class="hud-canvas-overlay"></canvas>
+
+                        <!-- HUD Graphical Overlay -->
+                        <div class="hud-grid-overlay">
+                            <div class="hud-top-left">
+                                <span class="hud-tag"><i class="fa-solid fa-crosshairs"></i> TRACKING: BLAZEPOSE LITE</span>
+                                <span class="hud-tag"><i class="fa-solid fa-microchip"></i> INFERENCE: CPU BI-LSTM</span>
+                            </div>
+                            <div class="hud-top-right">
+                                <span class="hud-tag hud-time" id="hud-clock">12:00:00 PM</span>
+                                <span class="hud-tag hud-fps" id="hud-fps">32 FPS</span>
+                            </div>
+
+                            <!-- Target Lock Frame Box -->
+                            <div class="hud-center-reticle" id="hud-reticle">
+                                <div class="reticle-corner tl"></div>
+                                <div class="reticle-corner tr"></div>
+                                <div class="reticle-corner bl"></div>
+                                <div class="reticle-corner br"></div>
+                                <span class="reticle-label" id="reticle-label">TARGET: ELEANOR VANCE [STABLE]</span>
+                            </div>
+
+                            <!-- Bottom Telemetry HUD Bar -->
+                            <div class="hud-bottom-bar">
+                                <div class="hud-metric">
+                                    <span class="hm-label">TRUNK VELOCITY:</span>
+                                    <span class="hm-value" id="hud-velocity">0.08 m/s (Normal)</span>
+                                </div>
+                                <div class="hud-metric">
+                                    <span class="hm-label">MOTION VECTOR:</span>
+                                    <span class="hm-value" id="hud-motion">Horizontal (Bed Rest)</span>
+                                </div>
+                                <div class="hud-metric">
+                                    <span class="hm-label">BED-EXIT RISK:</span>
+                                    <span class="hm-value text-safe" id="hud-bedexit-val">0% (In Bed)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sentinel Video Action Controls -->
+                    <div class="feed-footer-actions">
+                        <button class="btn btn-secondary" id="btn-toggle-cam">
+                            <i class="fa-solid fa-video"></i> <span id="cam-toggle-text">Start Webcam Sentinel</span>
+                        </button>
+                        <button class="btn btn-primary" id="btn-capture-snapshot">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Evaluate Gemini Vision Snapshot
+                        </button>
+                        <button class="btn btn-warning" id="btn-simulate-bedexit">
+                            <i class="fa-solid fa-bed"></i> Test Bed-Exit Alert
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Live Risk Forecasting & Telemetry Sidebar -->
+                <div class="sentinel-sidebar">
+                    
+                    <!-- Dynamic Fall & Bed-Exit Risk Gauge Card -->
+                    <div class="glass-card gauge-card">
+                        <div class="card-header-sm">
+                            <h5><i class="fa-solid fa-chart-line text-cyan"></i> Pose Risk Forecast</h5>
+                            <span class="pill-indicator pill-safe" id="gauge-risk-pill">SAFE</span>
+                        </div>
+
+                        <div class="gauge-svg-container">
+                            <svg class="radial-gauge-svg" viewBox="0 0 200 120">
+                                <path class="gauge-bg-arc" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="16" stroke-linecap="round"/>
+                                <path id="radial-gauge-fill" class="gauge-fill-arc" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#00F2FE" stroke-width="16" stroke-linecap="round" stroke-dasharray="251.2" stroke-dashoffset="230"/>
+                            </svg>
+                            <div class="gauge-inner-content">
+                                <span class="gauge-pct" id="gauge-pct-text">8%</span>
+                                <span class="gauge-caption">P(hazard) Forecast</span>
+                            </div>
+                        </div>
+
+                        <div class="gauge-thresholds">
+                            <span class="th-label text-safe">0% Safe</span>
+                            <span class="th-label text-warning">40% Warning</span>
+                            <span class="th-label text-danger">65% Emergency</span>
+                        </div>
+
+                        <p class="gauge-note" id="gauge-status-desc">
+                            Patient is stably situated. BiLSTM ensemble predicts zero imminent fall risk.
+                        </p>
+                    </div>
+
+                    <!-- Gemini Vision Ambient Snapshot Card -->
+                    <div class="glass-card snapshot-result-card" id="snapshot-card">
+                        <div class="card-header-sm">
+                            <h5><i class="fa-solid fa-eye text-cyan"></i> Vision Observation</h5>
+                            <span class="badge-gemini"><i class="fa-solid fa-sparkles"></i> Gemini Cloud</span>
+                        </div>
+
+                        <div class="snapshot-content" id="snapshot-content-box">
+                            <div class="empty-snapshot-state">
+                                <i class="fa-solid fa-camera-rotate"></i>
+                                <p>Tap <strong>Evaluate Gemini Vision Snapshot</strong> above to run multimodal scene verification.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rapid Dispatch Card -->
+                    <div class="glass-card quick-dispatch-card">
+                        <h5><i class="fa-solid fa-paper-plane text-cyan"></i> Instant Dispatch</h5>
+                        <p class="text-secondary sm-text">Immediately notify registered family members & nursing staff:</p>
+                        
+                        <div class="dispatch-btn-group">
+                            <button class="dispatch-btn sos-red" id="quick-dispatch-sos">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <span>Emergency SOS</span>
+                            </button>
+                            <button class="dispatch-btn voice-cyan" id="quick-dispatch-voice">
+                                <i class="fa-solid fa-microphone"></i>
+                                <span>Voice Message</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ================= TAB 2: VIDEO ANALYSIS LAB ================= -->
+        <section class="tab-panel" id="tab-lab" role="tabpanel">
+            
+            <div class="section-intro">
+                <span class="section-badge"><i class="fa-solid fa-flask-vial"></i> Pretrained BiLSTM Inference Benchmark</span>
+                <h2>Video Analysis & Benchmark Lab</h2>
+                <p>Run full temporal fall detection on standardized benchmark eldercare datasets (URFD) or upload custom clips. Evaluated locally on CPU at 28–42 FPS without external GPU dependencies.</p>
+            </div>
+
+            <!-- Lab Preset Bar -->
+            <div class="lab-toolbar glass-card">
+                <div class="preset-selector">
+                    <span class="selector-label">Select Test Clip:</span>
+                    <button class="preset-btn active" id="lab-btn-fall" data-clip="sample_fall.mp4">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span>Benchmark Fall (URFD)</span>
+                    </button>
+                    <button class="preset-btn" id="lab-btn-walk" data-clip="sample_walking.mp4">
+                        <i class="fa-solid fa-person-walking"></i>
+                        <span>Normal Walking (URFD)</span>
+                    </button>
+                    <label class="preset-btn upload-btn" for="video-upload-input">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span id="upload-label-text">Upload Custom MP4</span>
+                        <input type="file" id="video-upload-input" accept="video/mp4,video/webm" style="display:none;">
+                    </label>
+                </div>
+
+                <button class="btn btn-primary btn-run-analysis" id="btn-run-analysis">
+                    <i class="fa-solid fa-bolt"></i> Run Fall Analysis
+                </button>
+            </div>
+
+            <!-- Video Lab Workspace Grid -->
+            <div class="lab-grid">
+                
+                <!-- Main Player Card with Skeleton vs Raw Toggle -->
+                <div class="lab-player-card glass-card">
+                    <div class="player-top-bar">
+                        <div class="player-title">
+                            <span class="dot-online"></span>
+                            <span id="lab-video-filename">sample_fall.mp4</span>
+                        </div>
+
+                        <div class="view-toggle-pills">
+                            <button class="view-pill active" id="btn-view-annotated">
+                                <i class="fa-solid fa-draw-polygon"></i> AI Skeleton Overlay
+                            </button>
+                            <button class="view-pill" id="btn-view-raw">
+                                <i class="fa-solid fa-film"></i> Raw Stream
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="player-frame-wrapper">
+                        <video id="lab-video-player" controls preload="metadata" playsinline class="lab-video-elem">
+                            <source src="/static/assets/sample_fall_annotated.mp4" type="video/mp4" id="lab-video-source">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div class="lab-spinner-overlay" id="lab-spinner" style="display:none;">
+                            <div class="cyber-spinner"></div>
+                            <span class="spinner-text">Running BlazePose & BiLSTM Ensemble on CPU...</span>
+                        </div>
+                    </div>
+
+                    <!-- Video Telemetry Bar -->
+                    <div class="player-telemetry-bar">
+                        <div class="telemetry-item">
+                            <i class="fa-solid fa-gauge-high text-cyan"></i>
+                            <span>Speed: <strong id="telemetry-speed">~27.8 FPS (CPU)</strong></span>
+                        </div>
+                        <div class="telemetry-item">
+                            <i class="fa-solid fa-film text-cyan"></i>
+                            <span>Frames: <strong id="telemetry-frames">160 processed</strong></span>
+                        </div>
+                        <div class="telemetry-item">
+                            <i class="fa-solid fa-clock text-cyan"></i>
+                            <span>Duration: <strong id="telemetry-duration">10.6s</strong></span>
+                        </div>
+                        <div class="telemetry-item">
+                            <i class="fa-solid fa-shield-halved text-cyan"></i>
+                            <span>Peak Likelihood: <strong id="telemetry-risk">98.3% (EMERGENCY)</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analysis Results & Assessment Panel -->
+                <div class="lab-results-panel">
+                    
+                    <!-- Safety Assessment Card -->
+                    <div class="glass-card assessment-card">
+                        <div class="card-header-sm">
+                            <h5><i class="fa-solid fa-shield-virus text-cyan"></i> AI Safety Assessment</h5>
+                            <span class="peak-timestamp" id="assessment-peak-time">Peak: 3.83s</span>
+                        </div>
+
+                        <div class="assessment-status-box status-emergency" id="assessment-status-box">
+                            <div class="status-icon-wrap" id="assessment-icon-wrap">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                            <div class="status-text-wrap">
+                                <h4 id="assessment-title">Fall Hazard Identified</h4>
+                                <p id="assessment-desc">Subject transitioned rapidly to floor level. Verified by BiLSTM ensemble with peak 98.3% confidence at 3.83s.</p>
+                            </div>
+                        </div>
+
+                        <div class="action-recommendation-box">
+                            <span class="box-tag">RECOMMENDED CAREGIVER ACTION:</span>
+                            <p id="assessment-action">Initiate immediate audio check-in call and dispatch floor assistant.</p>
+                        </div>
+
+                        <div class="telegram-dispatch-status" id="lab-telegram-dispatch">
+                            <i class="fa-brands fa-telegram text-telegram"></i>
+                            <span id="lab-telegram-status-text">Emergency alert snapshot delivered to Telegram caregiver chat (Msg #11).</span>
+                        </div>
+                    </div>
+
+                    <!-- Model Pipeline Architecture Box -->
+                    <div class="glass-card pipeline-specs-card">
+                        <h5><i class="fa-solid fa-layer-group text-cyan"></i> Inference Engine Specs</h5>
+                        <ul class="specs-list">
+                            <li>
+                                <span class="spec-label">Pose Model:</span>
+                                <span class="spec-val">MediaPipe BlazePose Lite (33 3D Keypoints)</span>
+                            </li>
+                            <li>
+                                <span class="spec-label">Classifier:</span>
+                                <span class="spec-val">BiLSTM Dual-Checkpoint Ensemble (URFD + Aug)</span>
+                            </li>
+                            <li>
+                                <span class="spec-label">Execution:</span>
+                                <span class="spec-val text-safe">Pure CPU (PyTorch + TFLite XNNPACK)</span>
+                            </li>
+                            <li>
+                                <span class="spec-label">Sliding Window:</span>
+                                <span class="spec-val">30 Frames &bull; Stride 2 &bull; 15s Cooldown</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ================= TAB 3: SOS & VOICE STATION ================= -->
+        <section class="tab-panel" id="tab-sos" role="tabpanel">
+            
+            <div class="section-intro">
+                <span class="section-badge badge-emergency"><i class="fa-solid fa-bell"></i> Critical Assistance & Voice Messenger</span>
+                <h2>Patient Emergency SOS & Voice Station</h2>
+                <p>One-touch urgent assistance station and voice note messenger for elderly residents and caregivers. Instantly notifies registered family members via Telegram with real-time audio and location details.</p>
+            </div>
+
+            <div class="sos-station-grid">
+                
+                <!-- Big Emergency SOS Button Card -->
+                <div class="glass-card sos-primary-card">
+                    <div class="sos-card-header">
+                        <span class="pulse-indicator"></span>
+                        <h3>One-Touch Immediate Assistance</h3>
+                    </div>
+                    
+                    <p class="sos-explainer">
+                        Tap or click the button below if you have fallen, feel dizzy, or require immediate nurse support.
+                    </p>
+
+                    <!-- Large Accessible SOS Button -->
+                    <div class="large-sos-button-wrapper">
+                        <button class="huge-sos-button" id="btn-primary-sos" title="Press to call for emergency help">
+                            <div class="sos-inner-circle">
+                                <i class="fa-solid fa-hand-holding-medical"></i>
+                                <span class="sos-text-main">SOS</span>
+                                <span class="sos-text-sub">CALL FOR HELP</span>
+                            </div>
+                            <div class="sos-ripple ripple-1"></div>
+                            <div class="sos-ripple ripple-2"></div>
+                        </button>
+                    </div>
+
+                    <div class="sos-footer-notice">
+                        <i class="fa-solid fa-shield-heart text-cyan"></i>
+                        <span>Dispatches urgent alert + room camera snapshot to Telegram caregiver station.</span>
+                    </div>
+                </div>
+
+                <!-- Patient Voice Note Recorder & Messenger -->
+                <div class="glass-card voice-station-card">
+                    <div class="card-header-flex">
+                        <div class="header-with-icon">
+                            <i class="fa-solid fa-microphone-lines text-cyan"></i>
+                            <div>
+                                <h4>Patient Voice Emergency Note</h4>
+                                <span class="text-secondary sm-text">Record voice message to send directly to nurse / family</span>
+                            </div>
+                        </div>
+                        <span class="pill-indicator pill-cyan" id="mic-status-pill">Ready</span>
+                    </div>
+
+                    <!-- Voice Recorder Interactive Box -->
+                    <div class="voice-recorder-box">
+                        
+                        <div class="mic-visualizer-container">
+                            <div class="audio-wave-bars" id="audio-wave-anim">
+                                <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                            </div>
+                            <button class="mic-record-btn" id="btn-mic-record" title="Tap to Record Voice">
+                                <i class="fa-solid fa-microphone" id="mic-icon"></i>
+                            </button>
+                            <span class="record-timer" id="record-timer-text">00:00</span>
+                        </div>
+
+                        <p class="voice-prompt-text" id="voice-prompt-label">
+                            Tap microphone to record voice note (e.g., <em>"I'm feeling dizzy"</em> or <em>"I need help"</em>).
+                        </p>
+
+                        <!-- Audio Preview Player -->
+                        <div class="audio-preview-wrap" id="audio-preview-container" style="display:none;">
+                            <span class="preview-label">Recorded Note Preview:</span>
+                            <audio id="voice-audio-preview" controls class="voice-player-elem"></audio>
+                        </div>
+
+                        <!-- One-Tap Quick Voice Preset Tags -->
+                        <div class="quick-tags-section">
+                            <span class="tags-title">Quick Preset Emergency Messages:</span>
+                            <div class="tags-cloud">
+                                <button class="voice-tag-btn" data-msg="I am feeling very dizzy and unsteady. Please assist me.">
+                                    <i class="fa-solid fa-head-side-cough"></i> Feeling Dizzy
+                                </button>
+                                <button class="voice-tag-btn" data-msg="I am having chest pain and panic. Need immediate help.">
+                                    <i class="fa-solid fa-heart-pulse"></i> Panic / Chest Pain
+                                </button>
+                                <button class="voice-tag-btn" data-msg="I fell down near the bed and cannot get up.">
+                                    <i class="fa-solid fa-person-falling"></i> I Fell Down
+                                </button>
+                                <button class="voice-tag-btn" data-msg="Please bring water and check on me when possible.">
+                                    <i class="fa-solid fa-glass-water"></i> Need Water / Nurse
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Custom Voice/Text Input -->
+                        <div class="custom-voice-input-group">
+                            <input type="text" id="voice-custom-text" class="input-text-dark" placeholder="Or type a custom emergency message for caregiver...">
+                        </div>
+
+                        <!-- Send Button -->
+                        <button class="btn btn-primary btn-block btn-send-voice" id="btn-send-voice-alert">
+                            <i class="fa-solid fa-paper-plane"></i> Send Voice & Alert to Caregiver (Telegram)
+                        </button>
+
+                        <div class="voice-send-feedback" id="voice-send-feedback" style="display:none;"></div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ================= TAB 4: RISK SCENARIOS & INTELLIGENCE ================= -->
+        <section class="tab-panel" id="tab-scenarios" role="tabpanel">
+            
+            <div class="section-intro">
+                <span class="section-badge"><i class="fa-solid fa-brain"></i> Eldercare Safety Intelligence</span>
+                <h2>Critical Eldercare High-Risk Scenarios</h2>
+                <p>Falls in elderly care rarely happen without precursor events. AegisCare AI monitors key transitional hazard states—specifically <strong>unassisted bed-exits</strong>, sudden drops, and prolonged floor inactivity—providing preventive warnings before severe injury occurs.</p>
+            </div>
+
+            <div class="scenarios-grid">
+                
+                <!-- Scenario 1: Unassisted Bed-Exit / Chair Rise -->
+                <div class="glass-card scenario-card card-highlight">
+                    <div class="scenario-icon-top bg-amber">
+                        <i class="fa-solid fa-bed"></i>
+                    </div>
+                    <div class="scenario-badge badge-warning">Priority Hazard #1</div>
+                    <h3>Unassisted Bed-Exit & Chair Rise</h3>
+                    
+                    <p class="scenario-desc">
+                        Frail elderly patients frequently fall while attempting to stand from a bed or armchair without their walker or nursing assistance. AegisCare AI tracks the sudden vertical elevation of the trunk and hip displacement from resting coordinates.
+                    </p>
+
+                    <div class="scenario-logic-box">
+                        <span class="logic-tag">DETECTION MECHANISM:</span>
+                        <p>Trunk angle pitch &gt; 65&deg; + vertical hip velocity &gt; 0.4 m/s while in designated bed boundary without walker landmark.</p>
+                    </div>
+
+                    <div class="scenario-action-row">
+                        <button class="btn btn-warning btn-sm" id="btn-sim-bedexit-tab">
+                            <i class="fa-solid fa-play"></i> Simulate Bed-Exit Hazard Alert
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Scenario 2: Sudden Fall & High-Velocity Drop -->
+                <div class="glass-card scenario-card">
+                    <div class="scenario-icon-top bg-red">
+                        <i class="fa-solid fa-person-falling-burst"></i>
+                    </div>
+                    <div class="scenario-badge badge-emergency">Critical Impact</div>
+                    <h3>Sudden Fall & Floor Impact</h3>
+                    
+                    <p class="scenario-desc">
+                        Rapid downward gravitational acceleration of the torso followed by complete floor stillness. Evaluated by our 2-checkpoint BiLSTM ensemble over 30-frame temporal sliding windows.
+                    </p>
+
+                    <div class="scenario-logic-box">
+                        <span class="logic-tag">DETECTION MECHANISM:</span>
+                        <p>BiLSTM Softmax probability &gt; 0.65 across consecutive frames + horizontal torso bounding box aspect ratio &gt; 1.4.</p>
+                    </div>
+
+                    <div class="scenario-action-row">
+                        <button class="btn btn-danger btn-sm" id="btn-sim-fall-tab">
+                            <i class="fa-solid fa-play"></i> Simulate Sudden Fall Alert
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Scenario 3: Prolonged Inactivity on Floor -->
+                <div class="glass-card scenario-card">
+                    <div class="scenario-icon-top bg-purple">
+                        <i class="fa-solid fa-person-breastfeeding"></i>
+                    </div>
+                    <div class="scenario-badge badge-purple">Distress Posture</div>
+                    <h3>Prolonged Floor Inactivity / Distress</h3>
+                    
+                    <p class="scenario-desc">
+                        Even if a fall occurs outside the camera's primary field of view, an elderly person remaining motionless on the floor for &gt;45 seconds triggers an escalating distress code to nursing staff.
+                    </p>
+
+                    <div class="scenario-logic-box">
+                        <span class="logic-tag">DETECTION MECHANISM:</span>
+                        <p>Keypoint centroid elevation &lt; 20% room baseline + motion variance &lt; 0.02 across 45-second sliding accumulator.</p>
+                    </div>
+
+                    <div class="scenario-action-row">
+                        <button class="btn btn-secondary btn-sm" id="btn-sim-inactivity-tab">
+                            <i class="fa-solid fa-play"></i> Simulate Inactivity Alert
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Scenario 4: Nighttime Wandering & Boundary Crossing -->
+                <div class="glass-card scenario-card">
+                    <div class="scenario-icon-top bg-cyan">
+                        <i class="fa-solid fa-door-open"></i>
+                    </div>
+                    <div class="scenario-badge badge-cyan">Boundary Sentinel</div>
+                    <h3>Nighttime Roaming & Boundary Breach</h3>
+                    
+                    <p class="scenario-desc">
+                        Dementia and sleepwalking patients frequently wander toward exterior doors, unlit hallways, or stairwells. Virtual perimeter tripwires detect boundary breaches during curfew hours.
+                    </p>
+
+                    <div class="scenario-logic-box">
+                        <span class="logic-tag">DETECTION MECHANISM:</span>
+                        <p>Spatial intersection with virtual bounding zones during 10:00 PM &ndash; 06:00 AM curfew window.</p>
+                    </div>
+
+                    <div class="scenario-action-row">
+                        <button class="btn btn-secondary btn-sm" id="btn-sim-wandering-tab">
+                            <i class="fa-solid fa-play"></i> Simulate Boundary Breach
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ================= TAB 5: CARE LEDGER & ACTIVITY TIMELINE ================= -->
+        <section class="tab-panel" id="tab-timeline" role="tabpanel">
+            
+            <div class="section-intro">
+                <span class="section-badge"><i class="fa-solid fa-clock-rotate-left"></i> Automated Care Audit</span>
+                <h2>Activity & Incident Care Ledger</h2>
+                <p>Chronological audit log recording every mobility check, unassisted standing warning, emergency SOS call, and caregiver notification.</p>
+            </div>
+
+            <!-- Daily Caregiver Digest Card -->
+            <div class="glass-card digest-card">
+                <div class="digest-header">
+                    <div class="digest-title-group">
+                        <i class="fa-solid fa-file-medical text-cyan"></i>
+                        <div>
+                            <h4>Daily Caregiver Activity Digest</h4>
+                            <span class="sm-text text-secondary">Automated mobility synthesis for family members & medical attendants</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" id="btn-refresh-digest">
+                        <i class="fa-solid fa-arrows-rotate"></i> Refresh Digest
+                    </button>
+                </div>
+
+                <p class="digest-text" id="daily-digest-text">
+                    Loading today's eldercare activity patterns...
+                </p>
+
+                <div class="digest-metrics-row">
+                    <div class="d-metric">
+                        <span class="d-val" id="d-total-checks">0</span>
+                        <span class="d-label">Total Checks</span>
+                    </div>
+                    <div class="d-metric">
+                        <span class="d-val text-safe" id="d-safe-checks">0</span>
+                        <span class="d-label">Safe Mobility</span>
+                    </div>
+                    <div class="d-metric">
+                        <span class="d-val text-warning" id="d-warnings">0</span>
+                        <span class="d-label">Bed-Exit Warnings</span>
+                    </div>
+                    <div class="d-metric">
+                        <span class="d-val text-danger" id="d-hazards">0</span>
+                        <span class="d-label">Critical SOS/Falls</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Ledger Feed -->
+            <div class="glass-card ledger-feed-card">
+                <div class="card-header-flex">
+                    <div class="feed-filter-group">
+                        <button class="filter-chip active" data-filter="ALL">All Events</button>
+                        <button class="filter-chip" data-filter="SAFE">Safe Checks</button>
+                        <button class="filter-chip" data-filter="WARNING">Warnings</button>
+                        <button class="filter-chip" data-filter="EMERGENCY">Emergency / SOS</button>
+                    </div>
+
+                    <button class="btn btn-secondary btn-sm" id="btn-refresh-timeline">
+                        <i class="fa-solid fa-rotate"></i> Refresh Ledger
+                    </button>
+                </div>
+
+                <div class="timeline-list-container" id="timeline-list">
+                    <!-- Dynamic timeline items rendered here -->
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ================= TAB 6: ARCHITECTURE & SETTINGS ================= -->
+        <section class="tab-panel" id="tab-settings" role="tabpanel">
+            
+            <div class="section-intro">
+                <span class="section-badge"><i class="fa-solid fa-sliders"></i> System Architecture & Integrations</span>
+                <h2>System Architecture & Caregiver Settings</h2>
+                <p>Inspect the two-tier Edge + Multimodal Cloud architecture, verify local CPU inference throughput, and synchronize Telegram caregiver credentials.</p>
+            </div>
+
+            <div class="settings-grid">
+                
+                <!-- Architecture Workflow Card -->
+                <div class="glass-card arch-card">
+                    <h4><i class="fa-solid fa-network-wired text-cyan"></i> Two-Tier Hybrid Architecture</h4>
+                    <p class="sm-text text-secondary">Combines zero-lag local Edge processing with cloud multimodal reasoning:</p>
+
+                    <div class="arch-flow-diagram">
+                        <div class="arch-step">
+                            <div class="step-num">01</div>
+                            <div class="step-icon"><i class="fa-solid fa-video"></i></div>
+                            <h5>Camera Ingestion</h5>
+                            <p>Continuous RTSP or USB webcam stream (640x480 at 30 FPS).</p>
+                        </div>
+                        <div class="arch-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                        <div class="arch-step">
+                            <div class="step-num">02</div>
+                            <div class="step-icon"><i class="fa-solid fa-person-walking"></i></div>
+                            <h5>Edge BlazePose</h5>
+                            <p>MediaPipe BlazePose Lite extracts 33 3D spatial keypoints in 12ms on CPU.</p>
+                        </div>
+                        <div class="arch-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                        <div class="arch-step">
+                            <div class="step-num">03</div>
+                            <div class="step-icon"><i class="fa-solid fa-brain"></i></div>
+                            <h5>BiLSTM Ensemble</h5>
+                            <p>PyTorch temporal ensemble detects sudden vertical drops & immobility.</p>
+                        </div>
+                        <div class="arch-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                        <div class="arch-step">
+                            <div class="step-num">04</div>
+                            <div class="step-icon"><i class="fa-brands fa-telegram"></i></div>
+                            <h5>Instant Dispatch</h5>
+                            <p>Photo, voice note, & coordinates dispatched to caregiver in &lt;1.5 seconds.</p>
+                        </div>
+                    </div>
+
+                    <!-- Clinical Disclaimer Alert -->
+                    <div class="disclaimer-alert-box">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <div>
+                            <strong>Eldercare Assistance Notice:</strong>
+                            <p>AegisCare AI is an assistive visual sentinel and decision-support tool for family caregivers. It does not replace professional medical diagnosis, emergency medical services (911), or dedicated clinical supervision.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Telegram Configuration Card -->
+                <div class="glass-card telegram-settings-card">
+                    <h4><i class="fa-brands fa-telegram text-telegram"></i> Telegram Caregiver Sync</h4>
+                    <p class="sm-text text-secondary">Configure the Telegram Bot Token and Chat ID to receive instant photo alerts and voice notes.</p>
+
+                    <form id="telegram-config-form" class="settings-form">
+                        <div class="form-group">
+                            <label for="cfg-bot-token">Telegram Bot Token:</label>
+                            <input type="password" id="cfg-bot-token" class="input-text-dark" placeholder="e.g. 123456789:ABCDefghijk...">
+                            <small class="form-hint">Obtained via @BotFather on Telegram</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cfg-chat-id">Caregiver Chat ID:</label>
+                            <input type="text" id="cfg-chat-id" class="input-text-dark" placeholder="e.g. 987654321 or -100...">
+                            <small class="form-hint">Individual or family group chat ID</small>
+                        </div>
+
+                        <div class="form-btn-row">
+                            <button type="submit" class="btn btn-primary" id="btn-save-telegram">
+                                <i class="fa-solid fa-floppy-disk"></i> Save & Test Ping
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="btn-send-test-msg">
+                                <i class="fa-solid fa-paper-plane"></i> Send Test Alert
+                            </button>
+                        </div>
+
+                        <div id="telegram-save-status" class="status-msg-box" style="display:none;"></div>
+                    </form>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Quick Audio Element for Alarms -->
+    <audio id="alert-chime" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVoGAA==" type="audio/wav">
+    </audio>
+
+    <footer class="app-footer">
+        <div class="footer-container">
+            <p>&copy; 2026 AegisCare AI &bull; Intelligent Edge Vision Guardian for Elderly Loved Ones. Zero-lag CPU Execution.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
