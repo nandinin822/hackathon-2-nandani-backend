@@ -6,7 +6,7 @@ from typing import Optional, List, Dict, Any
 import requests
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
@@ -174,6 +174,28 @@ def read_root():
         "status": "active",
         "docs_url": "/docs"
     })
+
+@app.get("/styles.css")
+def get_styles():
+    f = STATIC_DIR / "styles.css"
+    if f.exists():
+        return FileResponse(f, media_type="text/css")
+    raise HTTPException(status_code=404)
+
+@app.get("/app.js")
+def get_app_js():
+    f = STATIC_DIR / "app.js"
+    if f.exists():
+        return FileResponse(f, media_type="application/javascript")
+    raise HTTPException(status_code=404)
+
+@app.get("/assets/{filename:path}")
+def get_static_asset(filename: str):
+    f = STATIC_DIR / "assets" / filename
+    if f.exists():
+        return FileResponse(f)
+    raise HTTPException(status_code=404)
+
 
 @app.get("/api/config")
 def get_config():
