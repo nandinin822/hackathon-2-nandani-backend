@@ -4,6 +4,7 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+    initStep1Header();
     initTabs();
     initSentinelHub();
     initVideoLab();
@@ -993,5 +994,133 @@ async function loadConfigStatus() {
         }
     } catch (e) {
         console.warn('Could not load integration config status:', e);
+    }
+}
+
+
+// ==========================================
+// STEP 1: LANDING HEADER, THEME & LANGUAGE
+// ==========================================
+function initStep1Header() {
+    // 1. Language Dropdown Toggle
+    const langBtn = document.getElementById('lang-menu-btn');
+    const langDropdown = document.getElementById('lang-dropdown-menu');
+    const currentLangText = document.getElementById('current-lang-text');
+    const langItems = document.querySelectorAll('.lang-item');
+
+    if (langBtn && langDropdown) {
+        langBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = langDropdown.style.display === 'flex';
+            langDropdown.style.display = isOpen ? 'none' : 'flex';
+        });
+
+        document.addEventListener('click', () => {
+            langDropdown.style.display = 'none';
+        });
+    }
+
+    // Language Selection handler
+    const translations = {
+        en: {
+            langName: "English",
+            login: "Log In",
+            signup: "Get Started",
+            themeDark: "Dark",
+            themeLight: "Light",
+            sentinelActive: "Sentinel Active"
+        },
+        es: {
+            langName: "Español",
+            login: "Iniciar Sesión",
+            signup: "Empezar",
+            themeDark: "Oscuro",
+            themeLight: "Claro",
+            sentinelActive: "Centinela Activo"
+        },
+        de: {
+            langName: "Deutsch",
+            login: "Anmelden",
+            signup: "Loslegen",
+            themeDark: "Dunkel",
+            themeLight: "Hell",
+            sentinelActive: "Wächter Aktiv"
+        }
+    };
+
+    let currentLang = localStorage.getItem('aegis_lang') || 'en';
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('aegis_lang', lang);
+        const t = translations[lang] || translations.en;
+        
+        if (currentLangText) currentLangText.textContent = t.langName;
+        
+        const loginBtnText = document.getElementById('nav-login-text');
+        const signupBtnText = document.getElementById('nav-signup-text');
+        if (loginBtnText) loginBtnText.textContent = t.login;
+        if (signupBtnText) signupBtnText.textContent = t.signup;
+
+        langItems.forEach(item => {
+            item.classList.toggle('active', item.dataset.lang === lang);
+        });
+    }
+
+    langItems.forEach(item => {
+        item.addEventListener('click', () => {
+            setLanguage(item.dataset.lang);
+            if (langDropdown) langDropdown.style.display = 'none';
+        });
+    });
+
+    setLanguage(currentLang);
+
+    // 2. Dark / Light Mode Toggle
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    const themeIcon = document.getElementById('theme-icon');
+    const themeText = document.getElementById('theme-text');
+
+    let currentTheme = localStorage.getItem('aegis_theme') || 'dark';
+
+    function applyTheme(theme) {
+        currentTheme = theme;
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('aegis_theme', theme);
+
+        const t = translations[currentLang] || translations.en;
+
+        if (theme === 'light') {
+            if (themeIcon) themeIcon.className = 'fa-solid fa-sun text-warning';
+            if (themeText) themeText.textContent = t.themeLight || 'Light';
+        } else {
+            if (themeIcon) themeIcon.className = 'fa-solid fa-moon text-cyan';
+            if (themeText) themeText.textContent = t.themeDark || 'Dark';
+        }
+    }
+
+    if (themeBtn) {
+        themeBtn.addEventListener('click', () => {
+            const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme(nextTheme);
+        });
+    }
+
+    applyTheme(currentTheme);
+
+    // 3. Login / Signup Button click feedback (Ready for Step 3 modal)
+    const btnLogin = document.getElementById('btn-login-nav');
+    const btnSignup = document.getElementById('btn-signup-nav');
+
+    if (btnLogin) {
+        btnLogin.addEventListener('click', () => {
+            alert('Step 1 Header Active! Login modal will be connected in Step 3.');
+        });
+    }
+
+    if (btnSignup) {
+        btnSignup.addEventListener('click', () => {
+            alert('Step 1 Header Active! Get Started modal will be connected in Step 3.');
+        });
     }
 }

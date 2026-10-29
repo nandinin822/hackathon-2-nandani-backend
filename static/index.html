@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,6 +17,63 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- ================= TOP LANDING HEADER (STEP 1) ================= -->
+    <header class="landing-top-bar">
+        <div class="landing-nav-container">
+            <!-- Left Side: Brand Logo -->
+            <a href="/" class="brand-group" id="landing-brand-link">
+                <div class="brand-logo">
+                    <i class="fa-solid fa-shield-heart"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-name">AegisCare<span class="accent-text">AI</span></span>
+                    <span class="brand-tagline">Vision Sentinel for Eldercare</span>
+                </div>
+            </a>
+
+            <!-- Right Side Controls: 1. Language, 2. Mode, 3. Login, 4. Get Started -->
+            <div class="landing-nav-right">
+                <!-- 1. Language Dropdown (English, Spanish, German) -->
+                <div class="lang-selector-wrapper">
+                    <button class="nav-control-btn lang-toggle-btn" id="lang-menu-btn" title="Select Language">
+                        <i class="fa-solid fa-globe"></i>
+                        <span id="current-lang-text">English</span>
+                        <i class="fa-solid fa-chevron-down caret-icon"></i>
+                    </button>
+                    <div class="lang-dropdown-menu" id="lang-dropdown-menu" style="display:none;">
+                        <button class="lang-item active" data-lang="en">
+                            <span class="flag">🇺🇸</span> English
+                        </button>
+                        <button class="lang-item" data-lang="es">
+                            <span class="flag">🇪🇸</span> Español
+                        </button>
+                        <button class="lang-item" data-lang="de">
+                            <span class="flag">🇩🇪</span> Deutsch
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. Dark / Light Mode Toggle -->
+                <button class="nav-control-btn theme-toggle-btn" id="theme-toggle-btn" title="Switch Theme (Dark / Light)">
+                    <i class="fa-solid fa-moon" id="theme-icon"></i>
+                    <span id="theme-text">Dark</span>
+                </button>
+
+                <!-- 3. Login Button -->
+                <button class="btn btn-secondary btn-login-top" id="btn-login-nav">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                    <span id="nav-login-text">Log In</span>
+                </button>
+
+                <!-- 4. Get Started / Sign Up Button -->
+                <button class="btn btn-primary btn-signup-top" id="btn-signup-nav">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span id="nav-signup-text">Get Started</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
 
     <!-- Header Navigation -->
     <header class="app-header">
